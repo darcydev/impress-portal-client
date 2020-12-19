@@ -11,6 +11,11 @@ const GlobalStyle = createGlobalStyle`
 		padding: 0;
 		box-sizing: border-box;
 	}
+	ul {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
 `;
 
 const theme = {

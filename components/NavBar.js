@@ -15,6 +15,9 @@ export const NavBar = () => {
 						<Link href='/clients'>Clients</Link>
 					</li>
 					<li>
+						<Link href='/media/upload'>Upload Assets</Link>
+					</li>
+					<li>
 						<Button type='primary' onClick={() => logoutUser()}>
 							Logout
 						</Button>
