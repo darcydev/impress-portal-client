@@ -22,8 +22,6 @@ const theme = {
 function MyApp({ Component, pageProps }) {
 	const token = Cookie.get('token');
 
-	console.log('token from _app :>> ', token);
-
 	return (
 		<>
 			<GlobalStyle />
