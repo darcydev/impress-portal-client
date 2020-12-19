@@ -31,7 +31,7 @@ export const LoginForm = () => {
 			</Form.Item>
 			<Form.Item>
 				<Button type='primary' htmlType='submit'>
-					Submit
+					Login
 				</Button>
 			</Form.Item>
 		</Form>
