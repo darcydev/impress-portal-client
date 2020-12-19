@@ -12,16 +12,16 @@ export default function AssetUpload() {
 	const [fileList, setFileList] = useState([]);
 
 	const onFinish = (values) => {
-		console.log('values :>> ', values);
-		console.log('submitted');
+		console.log('submitted values :>> ', values);
 
-		// uploadMedia(values, fileList);
+		uploadMedia(values, fileList);
 
-		message.success('Media uploaded');
+		// TODO include conditional success/fail message
 	};
 
 	const onFileAdded = (file) => setFileList([...fileList, file]);
 
+	// TODO can this be streamlined?
 	const onFileRemoved = (file) => {
 		const index = fileList.indexOf(file);
 		const newFileList = fileList.slice();
@@ -84,7 +84,7 @@ export default function AssetUpload() {
 								</div>
 								<div className='form-item-wrp'>
 									<Form.Item
-										name={`${uid}-tags`}
+										name={uid}
 										label='Insert tags for this specific asset'
 									>
 										<Select
