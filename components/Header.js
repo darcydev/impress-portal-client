@@ -3,11 +3,14 @@ import Link from 'next/link';
 
 import { NavBar } from './NavBar';
 
+import ThemeToggler from './ThemeToggler';
+
 export default function Header() {
 	return (
 		<StyledHeader>
 			<div className='logo-wrp'>
 				<Link href='/'>Impress Portal</Link>
+				<ThemeToggler />
 			</div>
 			<div className='nav-wrp'>
 				<NavBar />
@@ -21,4 +24,5 @@ const StyledHeader = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	background: ${(props) => props.theme.colors.bg};
 `;
