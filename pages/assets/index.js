@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Router from 'next/router';
 import styled from 'styled-components';
+import { QueryClient, useQuery } from 'react-query';
+import { dehydrate } from 'react-query/hydration';
 import { Select } from 'antd';
 
 import { isLoggedIn } from '../../lib/auth';
 import { readAllAssets } from '../../lib/assets';
 import { readAllJobs } from '../../lib/jobs';
-import AssetThumbnail from '../../components/Assets/AssetThumbnail';
+import AssetsContainer from '../../components/Assets/AssetsContainer';
 
 const { Option } = Select;
 
 export default function AssetsPage({ allAssets, preview }) {
-	const [jobCodes, setJobCodes] = useState([]);
 	const [searchFilters, setSearchFilters] = useState({
 		jobCodes: [],
 		tags: [],
@@ -23,29 +24,13 @@ export default function AssetsPage({ allAssets, preview }) {
 		return null;
 	}
 
-	useEffect(async () => {
-		const jobs = await readAllJobs();
-		setJobCodes(jobs.data.map((job) => job.job_code));
-	}, []);
-
-	const jobCodeOptions = [];
-	for (let i = 0; i < jobCodes.length; i++) {
-		jobCodeOptions.push(<Option key={jobCodes[i]}>{jobCodes[i]}</Option>);
-	}
+	const assetsQuery = useQuery('assets', readAllAssets);
+	const jobsQuery = useQuery('jobs', readAllJobs);
 
 	const tagOptions = [];
 	for (let i = 0; i < 100; i++) {
 		const value = `${i.toString(36)}${i}`;
 		tagOptions.push(<Option key={value}>{value}</Option>);
-	}
-
-	// DO FILTERING
-	// 1) job codes
-	console.log('allAssets before filter :>> ', allAssets);
-	if (searchFilters.jobCodes.length) {
-		allAssets = allAssets.filter((asset) => {
-			return searchFilters.jobCodes.includes(asset.job.job_code);
-		});
 	}
 
 	// 2) tags
@@ -56,41 +41,46 @@ export default function AssetsPage({ allAssets, preview }) {
 	// assetTags = ["foo", "bar", "horse"];
 	// searchTags = ["foo"];
 	// remove any asset for which EVERY search tag is contained in assetTags array
-	if (searchFilters.tags.length) {
+	/* 	if (searchFilters.tags.length) {
 		allAssets.filter((asset) => {
 			searchFilters.tags.forEach((searchTag) => {
 				console.log('searchTag :>> ', searchTag);
 
 				return asset.tags.includes(searchTag);
 			});
-		});
+		}); */
 
-		/* 		allAssets = allAssets.filter((asset) => {
+	/* 		allAssets = allAssets.filter((asset) => {
 			console.log('asset :>> ', asset.tags);
 			console.log('searchFilters.tags :>> ', searchFilters.tags);
 
 			// return searchFilters.tags.every(searchFilters.tags.includes(asset.tags));
-		}); */
-	}
-	console.log('allAssets after filter :>> ', allAssets);
+		});
+	} */
 
 	return (
-		<div>
+		<>
 			<h1>ALL ASSETS</h1>
 			<SearchContainer>
-				<div className='search-item-wrp'>
-					<Select
-						mode='multiple'
-						allowClear
-						style={{ width: '100%' }}
-						placeholder='Job Code'
-						onChange={(e) => {
-							setSearchFilters({ ...searchFilters, jobCodes: e });
-						}}
-					>
-						{jobCodeOptions}
-					</Select>
-				</div>
+				{/* JOB CODE SEARCH BAR */}
+				{jobsQuery.status === 'success' && (
+					<div className='search-item-wrp'>
+						<Select
+							mode='multiple'
+							allowClear
+							style={{ width: '100%' }}
+							placeholder='Job Code'
+							onChange={(e) => {
+								setSearchFilters({ ...searchFilters, jobCodes: e });
+							}}
+						>
+							{jobsQuery.data.data.map((job) => (
+								<Select.Option key={job.job_code}>{job.job_code}</Select.Option>
+							))}
+						</Select>
+					</div>
+				)}
+				{/* TAGS SEARCH BAR */}
 				<div className='search-item-wrp'>
 					<Select
 						mode='multiple'
@@ -105,42 +95,21 @@ export default function AssetsPage({ allAssets, preview }) {
 					</Select>
 				</div>
 			</SearchContainer>
-			<AssetsContainer>
-				{allAssets &&
-					allAssets.map((asset) => {
-						const { id, tags, used_by_client, file, job } = asset;
-
-						// TODO: legacy assets were uploaded without a file; can be removed later
-						if (asset.file) {
-							return (
-								<AssetThumbnail
-									id={id}
-									file={file}
-									title={file.name}
-									job={job}
-									tags={tags}
-									usedByClient={used_by_client}
-								/>
-							);
-						}
-					})}
-			</AssetsContainer>
-		</div>
+			<AssetsContainer query={assetsQuery} activeFilters={searchFilters} />
+		</>
 	);
 }
 
 const SearchContainer = styled.div``;
 
-const AssetsContainer = styled.div`
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-`;
-
 export async function getStaticProps({ preview = false }) {
-	const allAssets = await readAllAssets(preview);
+	const queryClient = new QueryClient();
+
+	await queryClient.prefetchQuery('assets', readAllAssets(preview));
 
 	return {
-		props: { allAssets, preview },
+		props: {
+			dehydratedState: dehydrate(queryClient),
+		},
 	};
 }
