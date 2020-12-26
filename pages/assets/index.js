@@ -12,7 +12,7 @@ import AssetsContainer from '../../components/Assets/AssetsContainer';
 
 const { Option } = Select;
 
-export default function AssetsPage({ allAssets, preview }) {
+export default function AssetsPage({ preview }) {
 	const [searchFilters, setSearchFilters] = useState({
 		jobCodes: [],
 		tags: [],
@@ -33,31 +33,6 @@ export default function AssetsPage({ allAssets, preview }) {
 		tagOptions.push(<Option key={value}>{value}</Option>);
 	}
 
-	// 2) tags
-
-	// BUG: NOT WORKING
-	// FIXME: search for tags not working
-	// need to use Array.prototype.every to check two arrays against each other
-	// assetTags = ["foo", "bar", "horse"];
-	// searchTags = ["foo"];
-	// remove any asset for which EVERY search tag is contained in assetTags array
-	/* 	if (searchFilters.tags.length) {
-		allAssets.filter((asset) => {
-			searchFilters.tags.forEach((searchTag) => {
-				console.log('searchTag :>> ', searchTag);
-
-				return asset.tags.includes(searchTag);
-			});
-		}); */
-
-	/* 		allAssets = allAssets.filter((asset) => {
-			console.log('asset :>> ', asset.tags);
-			console.log('searchFilters.tags :>> ', searchFilters.tags);
-
-			// return searchFilters.tags.every(searchFilters.tags.includes(asset.tags));
-		});
-	} */
-
 	return (
 		<>
 			<h1>ALL ASSETS</h1>
@@ -69,7 +44,7 @@ export default function AssetsPage({ allAssets, preview }) {
 							mode='multiple'
 							allowClear
 							style={{ width: '100%' }}
-							placeholder='Job Code'
+							placeholder='Job Code: search based on OR query'
 							onChange={(e) => {
 								setSearchFilters({ ...searchFilters, jobCodes: e });
 							}}
@@ -86,7 +61,7 @@ export default function AssetsPage({ allAssets, preview }) {
 						mode='multiple'
 						allowClear
 						style={{ width: '100%' }}
-						placeholder='Tags'
+						placeholder='Tags: search based on AND query'
 						onChange={(e) => {
 							setSearchFilters({ ...searchFilters, tags: e });
 						}}

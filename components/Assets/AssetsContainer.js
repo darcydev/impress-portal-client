@@ -39,12 +39,36 @@ export default function AssetsContainer({ query, activeFilters }) {
 	}
 
 	if (tags.length) {
+		// 1) filter out all assets with empty tags
+		filteredData = filteredData.filter((asset) => asset.tags);
+
+		// 2) filter out all assets with do not have all of the tags in their tags array
+		// ['foo', 'bar', 'cherry', 'apple'];
+
+		// check if EVERY one is in array
+		// ['foo'] => TRUE
+		// ['foo', 'bar'] => TRUE
+		// ['foo', 'cherry', 'banana'] => FALSE
+
+		// the below function is working, but very messy
+		// TODO: REFACTOR -> ASK STACK OVERFLOW HOW TO REFACTOR THIS
 		filteredData = filteredData.filter((asset) => {
-			for (let i = 0; i < tags.length; i++) {
-				return asset.tags.includes(tags[i]);
-			}
+			console.log('tags :>> ', tags);
+			console.log('asset.tags :>> ', asset.tags);
+
+			let assetIncluded = true;
+
+			tags.forEach((tag) => {
+				const searchTagInAssetTagArray = asset.tags.includes(tag);
+
+				if (!searchTagInAssetTagArray) assetIncluded = false;
+			});
+
+			return assetIncluded;
 		});
 	}
+
+	console.log('filteredData :>> ', filteredData);
 
 	if (!filteredData.length) {
 		return (

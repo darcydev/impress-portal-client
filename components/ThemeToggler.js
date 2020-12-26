@@ -6,7 +6,7 @@ import { IoMdMoon as Moon, IoMdSunny as Sun } from 'react-icons/io';
 import { ThemeContext } from '../context/ThemeContext';
 
 export default function ThemeToggler() {
-	const { theme, setThemeReducer } = useContext(ThemeContext);
+	const { setThemeReducer } = useContext(ThemeContext);
 
 	return (
 		<StyledSwitch

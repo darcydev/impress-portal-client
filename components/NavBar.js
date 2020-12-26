@@ -18,7 +18,7 @@ export const NavBar = () => {
 						<Link href='/assets'>Assets</Link>
 					</li>
 					<li>
-						<Link href='/media/upload'>Upload Assets</Link>
+						<Link href='/assets/upload'>Upload Assets</Link>
 					</li>
 					<li>
 						<Button type='primary' onClick={() => logoutUser()}>

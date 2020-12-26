@@ -2,21 +2,44 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { BsCloudDownload } from 'react-icons/bs';
 
+import AssetFormat from './AssetFormat';
+
 const API_URL = process.env.PUBLIC_API_URL;
 
 export default function AssetThumbnail({ id, file, title, job, tags }) {
-	const { thumbnail } = file.formats;
+	/* 	console.log('file :>> ', file); */
+
+	let fileUrl;
+
+	if (!file.formats) {
+		fileUrl = file.url;
+	} else {
+		fileUrl = file.formats.thumbnail.url;
+	}
+
+	/* 	console.log('fileUrl :>> ', fileUrl); */
 
 	return (
 		<StyledContainer>
 			<div className='img-wrp'>
-				<img src={`${API_URL}${thumbnail.url}`} alt={file.alternativeText} />
+				<img src={`${API_URL}${fileUrl}`} alt={file.alternativeText} />
 			</div>
 			<div className='txt-wrp'>
-				<p className='job-code'>{job.job_code}</p>
-				<p className='file-size'>{file.size}</p>
+				<p className='job-code'>Job code: {job.job_code}</p>
+				<p className='file-format'>
+					File format: <AssetFormat assetFormat={file.mime.split('/')[1]} />
+				</p>
+				<p className='file-size'>{file.size}KB</p>
 				<div className='tags-wrp'>
-					{tags && tags.map((tag) => <div className='tag-item'>{tag}</div>)}
+					<p>Tags:</p>
+					{tags &&
+						tags.map((tag, i) => {
+							return (
+								<div key={`${tag}-${i}`} className='tag-item'>
+									{tag}
+								</div>
+							);
+						})}
 				</div>
 				<div className='cta-wrp'>
 					<Link href={`/assets/${id}`}>View more</Link>
@@ -36,10 +59,11 @@ const StyledContainer = styled.div`
 	flex-direction: column;
 	box-shadow: 1px 1px 5px 2px rgba(1, 1, 1, 0.25);
 	margin: 20px;
+	flex: 0 0 18%;
 
 	.img-wrp {
-		width: 156px;
-		height: 100%;
+		width: 100%;
+		height: auto;
 
 		img {
 			width: 100%;
@@ -52,6 +76,11 @@ const StyledContainer = styled.div`
 
 		p.job-code {
 			margin: 0;
+		}
+
+		p.file-format {
+			display: flex;
+			align-items: center;
 		}
 
 		p.file-size {
