@@ -68,7 +68,7 @@ export default function AssetsContainer({ query, activeFilters }) {
 		});
 	}
 
-	console.log('filteredData :>> ', filteredData);
+	// console.log('filteredData :>> ', filteredData);
 
 	if (!filteredData.length) {
 		return (

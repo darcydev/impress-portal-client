@@ -4,11 +4,11 @@ import { Form, Select, Button, Upload, Input, message } from 'antd';
 import { FaCloudUploadAlt } from 'react-icons/fa';
 import { ImBin2 } from 'react-icons/im';
 import { RiArrowGoBackLine } from 'react-icons/ri';
+import { InboxOutlined } from '@ant-design/icons';
 
 import { uploadMedia } from '../../lib/media';
 
 export default function AssetUpload() {
-	const [formStage, setFormStage] = useState(1);
 	const [fileList, setFileList] = useState([]);
 
 	const onFinish = (values) => {
@@ -19,9 +19,14 @@ export default function AssetUpload() {
 		// TODO include conditional success/fail message
 	};
 
-	const onFileAdded = (file) => setFileList([...fileList, file]);
+	let newFileList = [...fileList];
 
-	// TODO can this be streamlined?
+	const onFileAdded = (file) => {
+		newFileList.push(file);
+		setFileList(newFileList);
+	};
+
+	// TODO can this be refactored?
 	const onFileRemoved = (file) => {
 		const index = fileList.indexOf(file);
 		const newFileList = fileList.slice();
@@ -40,7 +45,7 @@ export default function AssetUpload() {
 	}
 
 	return (
-		<Form name='media_upload' onFinish={onFinish}>
+		<StyledForm name='media_upload' onFinish={onFinish}>
 			<Form.Item
 				name='job_code'
 				label='Job code'
@@ -58,14 +63,21 @@ export default function AssetUpload() {
 			<Form.Item name='file_list' label='File List'>
 				<Upload.Dragger
 					name='file'
-					multiple
+					multiple={true}
 					fileList={fileList}
 					showUploadList={false}
 					onRemove={(file) => onFileRemoved(file)}
 					beforeUpload={(file) => onFileAdded(file)}
 				>
+					<p className='ant-upload-drag-icon'>
+						<InboxOutlined />
+					</p>
 					<p className='ant-upload-text'>
 						Click or drag file to this area to upload
+					</p>
+					<p className='ant-upload-hint'>
+						Support for a single or bulk upload. Strictly prohibit from
+						uploading company data or other band files
 					</p>
 				</Upload.Dragger>
 			</Form.Item>
@@ -104,9 +116,30 @@ export default function AssetUpload() {
 					Submit
 				</Button>
 			</Form.Item>
-		</Form>
+		</StyledForm>
 	);
 }
+
+const StyledForm = styled(Form)`
+	.ant-form-item {
+		display: flex;
+		flex-direction: column;
+		margin-bottom: 20px;
+
+		.ant-form-item-label {
+			text-align: left;
+
+			label {
+				font-size: 16px;
+				font-weight: 600;
+
+				::after {
+					display: none;
+				}
+			}
+		}
+	}
+`;
 
 const StyledFileList = styled.div`
 	ul {
@@ -129,9 +162,6 @@ const StyledFileList = styled.div`
 					background: inherit;
 					border: none;
 				}
-			}
-
-			.form-item-wrp {
 			}
 		}
 	}
