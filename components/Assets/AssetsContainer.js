@@ -1,6 +1,9 @@
+import Link from 'next/link';
 import styled from 'styled-components';
+import { Button, Empty, Skeleton } from 'antd';
 
 import AssetThumbnail from './AssetThumbnail';
+import EmptyData from '../EmptyData';
 
 export default function AssetsContainer({ query, activeFilters }) {
 	const { isError, isLoading, data } = query;
@@ -12,18 +15,21 @@ export default function AssetsContainer({ query, activeFilters }) {
 			</div>
 		);
 
-	if (isLoading)
-		return (
-			<div>
-				<p>Loading...</p>
-			</div>
-		);
+	if (isLoading) return <Skeleton active />;
 
 	if (!data) {
 		return (
-			<div>
-				<p>Oops something went wrong: no data found!</p>
-			</div>
+			<Empty
+				image='https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg'
+				imageStyle={{
+					height: 60,
+				}}
+				description={
+					<span>
+						<Link href='/assets/upload'>Upload Assets</Link>
+					</span>
+				}
+			/>
 		);
 	}
 
@@ -68,13 +74,13 @@ export default function AssetsContainer({ query, activeFilters }) {
 		});
 	}
 
-	// console.log('filteredData :>> ', filteredData);
-
-	if (!filteredData.length) {
+	if (!filteredData.length && !data.length) {
 		return (
-			<div>
-				<p>Oops no data found! Try expanding your search terms</p>
-			</div>
+			<EmptyData>
+				<Button type='primary'>
+					<Link href='/assets/upload'>Upload Assets</Link>
+				</Button>
+			</EmptyData>
 		);
 	}
 

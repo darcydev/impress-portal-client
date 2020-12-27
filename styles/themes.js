@@ -6,7 +6,7 @@ export default {
 	light: {
 		colors: {
 			txt: '#000',
-			bg: '#fff',
+			bg: '#efefef',
 		},
 		...general,
 	},
