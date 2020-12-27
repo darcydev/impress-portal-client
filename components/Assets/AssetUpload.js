@@ -12,11 +12,7 @@ export default function AssetUpload() {
 	const [fileList, setFileList] = useState([]);
 
 	const onFinish = (values) => {
-		console.log('submitted values :>> ', values);
-
 		uploadMedia(values, fileList);
-
-		// TODO include conditional success/fail message
 	};
 
 	let newFileList = [...fileList];
