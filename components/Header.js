@@ -22,6 +22,9 @@ export default function Header() {
 								<Link href='/clients'>Clients</Link>
 							</li>
 							<li>
+								<Link href='/jobs'>Jobs</Link>
+							</li>
+							<li>
 								<Link href='/assets'>Assets</Link>
 							</li>
 							<li>

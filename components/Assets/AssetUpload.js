@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Form, Select, Button, Upload, Input, message } from 'antd';
-import { FaCloudUploadAlt } from 'react-icons/fa';
+import { Form, Select, Button, Upload, message } from 'antd';
 import { ImBin2 } from 'react-icons/im';
-import { RiArrowGoBackLine } from 'react-icons/ri';
 import { InboxOutlined } from '@ant-design/icons';
+import { useQuery } from 'react-query';
 
 import { uploadMedia } from '../../lib/media';
+import { readAllJobs } from '../../lib/jobs';
 
 export default function AssetUpload() {
 	const [fileList, setFileList] = useState([]);
@@ -30,9 +30,24 @@ export default function AssetUpload() {
 		setFileList(newFileList);
 	};
 
+	let jobCodeOptions = [];
+
+	const jobsQuery = useQuery('jobs', readAllJobs);
+
+	if (jobsQuery.status === 'success') {
+		const jobCodeOptionsArray = jobsQuery.data.data.map((job) => job.job_code);
+
+		jobCodeOptionsArray.forEach((v) => {
+			jobCodeOptions.push({
+				value: v,
+				disabled: false,
+			});
+		});
+	}
+
 	// TODO fetch from API
 	const options = [];
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 30; i++) {
 		const value = `${i.toString(36)}${i}`;
 		options.push({
 			value,
@@ -42,13 +57,19 @@ export default function AssetUpload() {
 
 	return (
 		<StyledForm name='media_upload' onFinish={onFinish}>
-			<Form.Item
-				name='job_code'
-				label='Job code'
-				rules={[{ required: true, message: 'Required' }]}
-			>
-				<Input />
-			</Form.Item>
+			{jobsQuery.status === 'success' && jobCodeOptions.length && (
+				<Form.Item
+					name='job_code'
+					label='Job code'
+					rules={[{ required: true, message: 'Required' }]}
+				>
+					<Select
+						showSearch
+						placeholder='Select Job Code'
+						options={jobCodeOptions}
+					/>
+				</Form.Item>
+			)}
 			<Form.Item
 				name='tags'
 				label='Tags'

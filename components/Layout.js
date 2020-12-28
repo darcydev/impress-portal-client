@@ -18,5 +18,5 @@ export default function Layout({ preview, children }) {
 const StyledMain = styled.main`
 	width: 1200px;
 	max-width: 90%;
-	margin: auto;
+	margin: 50px auto;
 `;
