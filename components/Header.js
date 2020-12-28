@@ -5,6 +5,7 @@ import { Button } from 'antd';
 import { isLoggedIn, logoutUser } from '../lib/auth';
 
 import ThemeToggler from './ThemeToggler';
+import NewJobModal from './Modals/NewJobModal';
 
 export default function Header() {
 	const isAuth = isLoggedIn();
@@ -29,6 +30,9 @@ export default function Header() {
 							</li>
 							<li>
 								<Link href='/assets/upload'>Upload Assets</Link>
+							</li>
+							<li>
+								<NewJobModal modalBtnTxt='Start New Brief' />
 							</li>
 							<li>
 								<Button type='primary' onClick={() => logoutUser()}>
