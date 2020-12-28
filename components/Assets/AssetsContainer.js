@@ -1,36 +1,26 @@
 import Link from 'next/link';
 import styled from 'styled-components';
-import { Button, Empty, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 
 import AssetThumbnail from './AssetThumbnail';
 import EmptyData from '../EmptyData';
 
 export default function AssetsContainer({ query, activeFilters }) {
-	const { isError, isLoading, data } = query;
+	const { status, isLoading, data } = query;
 
-	if (isError)
+	if (status === 'error')
 		return (
 			<div>
 				<h1>Error!</h1>
 			</div>
 		);
 
-	if (isLoading) return <Skeleton active />;
+	if (isLoading) {
+		return <Skeleton active />;
+	}
 
 	if (!data) {
-		return (
-			<Empty
-				image='https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg'
-				imageStyle={{
-					height: 60,
-				}}
-				description={
-					<span>
-						<Link href='/assets/upload'>Upload Assets</Link>
-					</span>
-				}
-			/>
-		);
+		return <EmptyData />;
 	}
 
 	/* FILTERING */
@@ -59,9 +49,6 @@ export default function AssetsContainer({ query, activeFilters }) {
 		// the below function is working, but very messy
 		// TODO: REFACTOR -> ASK STACK OVERFLOW HOW TO REFACTOR THIS
 		filteredData = filteredData.filter((asset) => {
-			console.log('tags :>> ', tags);
-			console.log('asset.tags :>> ', asset.tags);
-
 			let assetIncluded = true;
 
 			tags.forEach((tag) => {
@@ -74,14 +61,8 @@ export default function AssetsContainer({ query, activeFilters }) {
 		});
 	}
 
-	if (!filteredData.length && !data.length) {
-		return (
-			<EmptyData>
-				<Button type='primary'>
-					<Link href='/assets/upload'>Upload Assets</Link>
-				</Button>
-			</EmptyData>
-		);
+	if (!filteredData.length) {
+		return <EmptyData />;
 	}
 
 	return (

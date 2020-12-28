@@ -33,6 +33,8 @@ export default function AssetsPage({ preview }) {
 		tagOptions.push(<Option key={value}>{value}</Option>);
 	}
 
+	console.log('assets.query :>> ', assetsQuery);
+
 	return (
 		<>
 			<h1>ALL ASSETS</h1>
@@ -40,11 +42,11 @@ export default function AssetsPage({ preview }) {
 				{/* JOB CODE SEARCH BAR */}
 				{jobsQuery.status === 'success' && (
 					<div className='search-item-wrp'>
+						<label>Filter by Job Code</label>
 						<Select
 							mode='multiple'
 							allowClear
-							style={{ width: '100%' }}
-							placeholder='Job Code: search based on OR query'
+							placeholder='Based on OR query'
 							onChange={(e) => {
 								setSearchFilters({ ...searchFilters, jobCodes: e });
 							}}
@@ -57,11 +59,11 @@ export default function AssetsPage({ preview }) {
 				)}
 				{/* TAGS SEARCH BAR */}
 				<div className='search-item-wrp'>
+					<label>Filter by Asset Tags</label>
 					<Select
 						mode='multiple'
 						allowClear
-						style={{ width: '100%' }}
-						placeholder='Tags: search based on AND query'
+						placeholder='Based on AND query'
 						onChange={(e) => {
 							setSearchFilters({ ...searchFilters, tags: e });
 						}}
@@ -75,7 +77,19 @@ export default function AssetsPage({ preview }) {
 	);
 }
 
-const SearchContainer = styled.div``;
+const SearchContainer = styled.div`
+	display: flex;
+	background: #efefef;
+	padding: 20px;
+	border-radius: 10px;
+
+	.search-item-wrp {
+		flex: 1;
+		margin: 0 10px;
+		display: flex;
+		flex-direction: column;
+	}
+`;
 
 export async function getStaticProps({ preview = false }) {
 	const queryClient = new QueryClient();
