@@ -1,14 +1,19 @@
+import { useContext } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { Button } from 'antd';
 
-import { isLoggedIn, logoutUser } from '../lib/auth';
+import { isLoggedIn } from '../lib/auth';
+import { AuthContext } from '../context/AuthContext';
 
 import ThemeToggler from './ThemeToggler';
 import NewJobModal from './Modals/NewJobModal';
+import LogoutButton from './Buttons/LogoutButton';
 
 export default function Header() {
+	const { user } = useContext(AuthContext);
 	const isAuth = isLoggedIn();
+
+	const userRole = user.role?.name || undefined;
 
 	return (
 		<StyledHeader>
@@ -28,16 +33,18 @@ export default function Header() {
 							<li>
 								<Link href='/assets'>Assets</Link>
 							</li>
+							{(userRole === 'Authenticated' || userRole === 'Manager') && (
+								<li>
+									<Link href='/assets/upload'>Upload Assets</Link>
+								</li>
+							)}
+							{(userRole === 'Authenticated' || userRole === 'Manager') && (
+								<li>
+									<NewJobModal modalBtnTxt='Start New Brief' />
+								</li>
+							)}
 							<li>
-								<Link href='/assets/upload'>Upload Assets</Link>
-							</li>
-							<li>
-								<NewJobModal modalBtnTxt='Start New Brief' />
-							</li>
-							<li>
-								<Button type='primary' onClick={() => logoutUser()}>
-									Logout
-								</Button>
+								<LogoutButton />
 							</li>
 							<li>
 								<ThemeToggler />

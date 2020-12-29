@@ -33,8 +33,6 @@ export default function AssetsPage({ preview }) {
 		tagOptions.push(<Option key={value}>{value}</Option>);
 	}
 
-	console.log('assets.query :>> ', assetsQuery);
-
 	return (
 		<>
 			<h1>ALL ASSETS</h1>

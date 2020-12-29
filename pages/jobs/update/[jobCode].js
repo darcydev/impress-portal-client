@@ -1,24 +1,28 @@
-import Cookie from 'js-cookie';
-import BriefingFormClient from '../../../components/Forms/BriefingFormClient';
+import { useContext } from 'react';
 
+import { AuthContext } from '../../../context/AuthContext';
+import BriefingFormClient from '../../../components/Forms/BriefingFormClient';
 import BriefingFormStudio from '../../../components/Forms/BriefingFormStudio';
 import { readAllJobs, readJobByJobCode } from '../../../lib/jobs';
 
 export default function Brief({ job, preview }) {
+	const { user } = useContext(AuthContext);
+
 	if (!job) {
 		return <div>error! no job found</div>;
 	}
 
-	const token = Cookie.get('token');
-
-	console.log('token :>> ', token);
+	const userRole = user.role?.name || undefined;
 
 	return (
 		<div>
 			<h1>Brief</h1>
 			<div className='form-wrp'>
-				{/* TODO change this be based on user's role (Studio or Client) */}
-				{token ? <BriefingFormStudio job={job} /> : <BriefingFormClient />}
+				{userRole === 'Client' ? (
+					<BriefingFormClient job={job} />
+				) : (
+					<BriefingFormStudio job={job} />
+				)}
 			</div>
 		</div>
 	);

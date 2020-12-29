@@ -4,9 +4,9 @@ import { loginUser } from '../../lib/auth';
 
 export const LoginForm = () => {
 	const onSubmit = async (values) => {
-		const loginSuccessful = await loginUser(values);
+		const loggedInUser = await loginUser(values);
 
-		if (loginSuccessful) {
+		if (loggedInUser) {
 			message.success('Login successful');
 		} else {
 			message.fail('Login failed');
