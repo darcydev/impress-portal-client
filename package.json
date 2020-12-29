@@ -10,9 +10,9 @@
 	"dependencies": {
 		"@ant-design/icons": "^4.3.0",
 		"antd": "^4.9.4",
-		"axios": "^0.21.0",
+		"axios": "^0.21.1",
 		"js-cookie": "^2.2.1",
-		"next": "10.0.3",
+		"next": "10.0.4",
 		"react": "17.0.1",
 		"react-dom": "17.0.1",
 		"react-icons": "^4.1.0",
