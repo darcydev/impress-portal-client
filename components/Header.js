@@ -6,8 +6,8 @@ import { isLoggedIn } from '../lib/auth';
 import { AuthContext } from '../context/AuthContext';
 
 import ThemeToggler from './ThemeToggler';
-import NewJobModal from './Modals/NewJobModal';
 import LogoutButton from './Buttons/LogoutButton';
+import NewBriefButton from './Buttons/NewBriefButton';
 
 export default function Header() {
 	const { user } = useContext(AuthContext);
@@ -40,7 +40,7 @@ export default function Header() {
 							)}
 							{(userRole === 'Authenticated' || userRole === 'Manager') && (
 								<li>
-									<NewJobModal modalBtnTxt='Start New Brief' />
+									<NewBriefButton />
 								</li>
 							)}
 							<li>

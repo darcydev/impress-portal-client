@@ -20,8 +20,6 @@ const AuthProvider = ({ children }) => {
 					},
 				})
 				.then((res) => {
-					console.log('res fetched from AuthContext: ', res);
-
 					setUser(res.data);
 				})
 				.catch((err) => console.error(err));

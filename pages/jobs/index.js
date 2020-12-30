@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 
-import NewJobModal from '../../components/Modals/NewJobModal';
 import { readAllJobs } from '../../lib/jobs';
 import { isLoggedIn } from '../../lib/auth';
 
@@ -30,7 +29,6 @@ export default function JobsPage({ preview }) {
 		return (
 			<div>
 				<h2>list of all jobs</h2>
-				<NewJobModal />
 				<div className='data-container'>
 					<ul>
 						{data.data.map((job) => {

@@ -14,7 +14,7 @@ export default function LogoutButton() {
 	};
 
 	return (
-		<Button type='primary' onClick={() => handleLogout()}>
+		<Button type='danger' onClick={() => handleLogout()}>
 			Logout
 		</Button>
 	);
