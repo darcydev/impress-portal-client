@@ -1,9 +1,8 @@
+import Link from 'next/link';
 import { useQuery } from 'react-query';
 
 import { readUserRole } from '../../lib/auth';
 import { readAllBriefs, readBriefById } from '../../lib/briefs';
-import BriefingFormManager from '../../components/Forms/BriefingFormManager';
-import BriefingFormClient from '../../components/Forms/BriefingFormClient';
 
 export default function Brief({ brief, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
@@ -17,14 +16,31 @@ export default function Brief({ brief, preview }) {
 	}
 
 	if (userRoleQuery.data !== 'Manager') {
-		return <BriefingFormManager job={brief} />;
+		return <p>forbidden...</p>;
 	}
 
-	if (userRoleQuery.data === 'Client') {
-		return <BriefingFormClient job={brief} />;
-	}
+	console.log('brief :>> ', brief);
 
-	return <div>error: no user found</div>;
+	const {
+		id,
+		brief_title,
+		assets,
+		brand_assets_style_guide_on_file,
+		brief_audiences,
+		brief_status,
+		brief_type,
+		budget,
+		created_at,
+		updated_at,
+		date_approved,
+	} = brief;
+
+	return (
+		<div>
+			<p>Brief title: {brief_title}</p>
+			<Link href={`/briefs/edit/${id}`}>Edit</Link>
+		</div>
+	);
 }
 
 export async function getStaticProps({ params, preview = false }) {
@@ -38,7 +54,6 @@ export async function getStaticProps({ params, preview = false }) {
 export async function getStaticPaths() {
 	const allBriefs = await readAllBriefs();
 
-	// Get the paths we want to pre-render based on posts
 	const paths = allBriefs.map((brief) => ({
 		params: { id: brief.id.toString() },
 	}));

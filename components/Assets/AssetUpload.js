@@ -1,18 +1,68 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Form, Select, Button, Upload, message } from 'antd';
+import { Form, Select, Button, Upload, Input, message } from 'antd';
 import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
 import { useQuery } from 'react-query';
 
-import { uploadMedia } from '../../lib/media';
-import { readAllJobs } from '../../lib/jobs';
+import { uploadMedia, createMedia } from '../../lib/media';
+import { createAsset, updateAsset } from '../../lib/assets';
+import { readJobByJobCode, readAllNonNullJobCodes } from '../../lib/jobs';
+
+const { Option } = Select;
 
 export default function AssetUpload() {
 	const [fileList, setFileList] = useState([]);
 
-	const onFinish = (values) => {
-		uploadMedia(values, fileList);
+	const onFormFinish = async (values) => {
+		console.log('values :>> ', values);
+		console.log('fileList :>> ', fileList);
+
+		let createdAssetBody = {};
+
+		if (values.job_code) {
+			const { id } = await readJobByJobCode(values.job_code);
+
+			createdAssetBody = JSON.stringify({ job: id });
+		}
+
+		/* TODO check if uploaded to brief */
+
+		const createdAsset = await createAsset(createdAssetBody);
+
+		console.log('createdAsset :>> ', createdAsset);
+
+		const createdMedia = await createMedia(createdAsset.id, fileList);
+
+		console.log('createdMedia :>> ', createdMedia);
+
+		// create the body the update the asset
+		const generalTags = values.tags || [];
+
+		fileList.forEach(async (file) => {
+			console.log('file :>> ', file);
+			const { uid } = file;
+
+			const specificTags = values[`${uid}Tags`] || [];
+			const assetTags = [...new Set([...generalTags, ...specificTags])];
+			const assetDescription = values[`${uid}AssetDescription`];
+			const serverLocation = values[`${uid}ServerLocation`];
+			const externalLocation = values[`${uid}ExternalLocation`];
+			const visibilityRestriction = values[`${uid}VisibilityRestriction`];
+
+			const body = JSON.stringify({
+				tags: assetTags,
+				asset_description: assetDescription,
+				server_location: serverLocation,
+				external_location: externalLocation,
+				visibility_restriction: visibilityRestriction,
+				uploaded_by_client: false,
+			});
+
+			const updatedAsset = await updateAsset(createdAsset.id, body);
+
+			console.log('updatedAsset :>> ', updatedAsset);
+		});
 	};
 
 	let newFileList = [...fileList];
@@ -30,19 +80,15 @@ export default function AssetUpload() {
 		setFileList(newFileList);
 	};
 
+	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
+
 	let jobCodeOptions = [];
 
-	const jobsQuery = useQuery('jobs', readAllJobs);
-
-	if (jobsQuery.status === 'success') {
-		const jobCodeOptionsArray = jobsQuery.data.data.map((job) => job.job_code);
-
-		jobCodeOptionsArray.forEach((v) => {
-			jobCodeOptions.push({
-				value: v,
-				disabled: false,
-			});
-		});
+	if (jobCodesQuery.status === 'success') {
+		for (let i = 0; i < jobCodesQuery.data.length; i++) {
+			const value = jobCodesQuery.data[i];
+			jobCodeOptions.push({ value });
+		}
 	}
 
 	// TODO fetch from API
@@ -56,26 +102,22 @@ export default function AssetUpload() {
 	}
 
 	return (
-		<StyledForm name='media_upload' onFinish={onFinish}>
-			{jobsQuery.status === 'success' && jobCodeOptions.length && (
-				<Form.Item
-					name='job_code'
-					label='Job code'
-					rules={[{ required: true, message: 'Required' }]}
-				>
-					<Select
-						showSearch
-						placeholder='Select Job Code'
-						options={jobCodeOptions}
-					/>
-				</Form.Item>
-			)}
-			<Form.Item
-				name='tags'
-				label='Tags'
-				rules={[{ required: true, message: 'Required' }]}
-			>
-				<Select mode='multiple' placeholder='Select tags' options={options} />
+		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
+			<Form.Item name='job_code' label='Job code'>
+				<Select
+					showSearch
+					allowClear
+					placeholder='Select Job Code'
+					options={jobCodeOptions}
+				/>
+			</Form.Item>
+			<Form.Item name='tags' label='Tags'>
+				<Select
+					mode='multiple'
+					allowClear
+					placeholder='Select tags'
+					options={options}
+				/>
 			</Form.Item>
 			<Form.Item name='file_list' label='File List'>
 				<Upload.Dragger
@@ -92,10 +134,6 @@ export default function AssetUpload() {
 					<p className='ant-upload-text'>
 						Click or drag file to this area to upload
 					</p>
-					<p className='ant-upload-hint'>
-						Support for a single or bulk upload. Strictly prohibit from
-						uploading company data or other band files
-					</p>
 				</Upload.Dragger>
 			</Form.Item>
 			<StyledFileList>
@@ -106,14 +144,14 @@ export default function AssetUpload() {
 						return (
 							<li key={uid}>
 								<div className='file-wrp'>
-									<p>{name}</p>
+									<h3>{name}</h3>
 									<button onClick={(file) => onFileRemoved(file)}>
 										<ImBin2 />
 									</button>
 								</div>
 								<div className='form-item-wrp'>
 									<Form.Item
-										name={uid}
+										name={`${uid}Tags`}
 										label='Insert tags for this specific asset'
 									>
 										<Select
@@ -121,6 +159,49 @@ export default function AssetUpload() {
 											placeholder='Select tags for this asset'
 											options={options}
 										/>
+									</Form.Item>
+								</div>
+								<div className='form-item-wrp'>
+									<Form.Item
+										name={`${uid}ServerLocation`}
+										label='Server location'
+									>
+										<Input />
+									</Form.Item>
+								</div>
+								<div className='form-item-wrp'>
+									<Form.Item
+										name={`${uid}AssetDescription`}
+										label='Asset Description'
+									>
+										<Input />
+									</Form.Item>
+								</div>
+								<div className='form-item-wrp'>
+									<Form.Item
+										name={`${uid}ExternalLocation`}
+										label='External location'
+									>
+										<Input />
+									</Form.Item>
+								</div>
+								<div className='form-item-wrp'>
+									<Form.Item
+										name={`${uid}VisibilityReduction`}
+										label='Visibility Restriction'
+									>
+										<Select
+											allowClear
+											placeholder='Select visibility restriction'
+										>
+											<Option value='unrestricted'>Unrestricted</Option>
+											<Option value='restricted_to_client'>
+												Restricted to client
+											</Option>
+											<Option value='restricted_within_client'>
+												Restricted within client
+											</Option>
+										</Select>
 									</Form.Item>
 								</div>
 							</li>
@@ -147,8 +228,7 @@ const StyledForm = styled(Form)`
 			text-align: left;
 
 			label {
-				font-size: 16px;
-				font-weight: 600;
+				font-size: 14px;
 
 				::after {
 					display: none;

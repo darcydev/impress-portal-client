@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { useQuery } from 'react-query';
 
 import { readUserRole } from '../../lib/auth';
-import { readAllClients, readClientById } from '../../lib/clients';
+import { readAllJobs, readJobById } from '../../lib/jobs';
 
-export default function Client({ client, preview }) {
+export default function Job({ job, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status === 'error') {
@@ -19,43 +19,34 @@ export default function Client({ client, preview }) {
 		return <p>forbidden...</p>;
 	}
 
-	const {
-		id,
-		client_code,
-		client_description,
-		client_title,
-		jobs,
-		created_at,
-	} = client;
+	const { id, job_code, assets, briefs, clients } = job;
 
 	return (
 		<div>
-			<h1>Single client page</h1>
-			<p>Client code: {client_code}</p>
-			<p>Client title: {client_title}</p>
-			<p>Client description: {client_description}</p>
-			<Link href={`/clients/edit/${id}`}>Edit</Link>
+			<h1>Single job page</h1>
+			<p>Job code: {job_code}</p>
+			<Link href={`/jobs/edit/${id}`}>Edit</Link>
 		</div>
 	);
 }
 
 export async function getStaticProps({ params, preview = false }) {
-	const client = await readClientById(params.id, preview);
+	const job = await readJobById(params.id, preview);
 
 	return {
 		props: {
-			client,
+			job,
 			preview,
 		},
 	};
 }
 
 export async function getStaticPaths() {
-	const allClients = await readAllClients();
+	const allJobs = await readAllJobs();
 
-	const paths = allClients.map((client) => ({
+	const paths = allJobs.map((job) => ({
 		params: {
-			id: client.id.toString(),
+			id: job.id.toString(),
 		},
 	}));
 

@@ -17,7 +17,7 @@ import { updateJob } from '../../lib/jobs';
 
 const { Option } = Select;
 
-export default function BriefingFormClient({ job }) {
+export default function EditBriefClient({ job }) {
 	const [fileList, setFileList] = useState([]);
 	const {
 		job_type,
@@ -48,7 +48,7 @@ export default function BriefingFormClient({ job }) {
 	// console.log('fileList :>> ', fileList);
 
 	return (
-		<StyledForm name='briefing_form_client' onFinish={onFinish}>
+		<StyledForm name='edit_brief_client_form' onFinish={onFinish}>
 			{job_type_visible && (
 				<div className='form-item-wrp'>
 					<h2>Job Type:</h2>

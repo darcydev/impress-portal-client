@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
+import { useQuery } from 'react-query';
 
-import { readAllJobs } from '../../lib/jobs';
 import { readUserRole } from '../../lib/auth';
+import { readAllJobs } from '../../lib/jobs';
 
-export default function JobsPage({ preview }) {
+export default function JobsPage({ allJobs, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status !== 'success') {
@@ -16,49 +15,36 @@ export default function JobsPage({ preview }) {
 		return <div>Forbidden!</div>;
 	}
 
-	const jobsQuery = useQuery('jobs', readAllJobs);
-
-	const { status, data, isFetching } = jobsQuery;
-
-	if (status === 'error') {
-		return <div>error...</div>;
+	if (!allJobs.length) {
+		<p>loading...</p>;
 	}
 
-	if (status === 'loading') {
-		return <div>loading...</div>;
-	}
+	return (
+		<div>
+			<h2>a list of all jobs</h2>
+			<div className='data-container'>
+				<ul>
+					{allJobs.map((job) => {
+						const { id, job_code } = job;
 
-	if (status === 'success') {
-		return (
-			<div>
-				<h2>list of all jobs</h2>
-				<div className='data-container'>
-					<ul>
-						{data.data.map((job) => {
-							const { id, job_code, job_type, tags, created_at } = job;
-
-							return (
-								<li key={id}>
-									<Link href={`/jobs/update/${job_code}`}>{job_code}</Link>
-								</li>
-							);
-						})}
-					</ul>
-				</div>
-				{isFetching && <p>updating...</p>}
+						return (
+							<li key={id}>
+								<p>Job Code: {job_code}</p>
+								<Link href={`/jobs/${id}`}>view</Link>
+								<Link href={`/jobs/edit/${id}`}>edit</Link>
+							</li>
+						);
+					})}
+				</ul>
 			</div>
-		);
-	}
+		</div>
+	);
 }
 
 export async function getStaticProps({ preview = false }) {
-	const queryClient = new QueryClient();
-
-	await queryClient.prefetchQuery('jobs', readAllJobs(preview));
+	const allJobs = await readAllJobs(preview);
 
 	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
+		props: { allJobs, preview },
 	};
 }

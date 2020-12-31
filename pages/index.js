@@ -5,6 +5,7 @@ import { Button } from 'antd';
 
 import { AuthContext } from '../context/AuthContext';
 import NewBriefButton from '../components/Buttons/NewBriefButton';
+import NewJobButton from '../components/Buttons/NewJobButton';
 import NewClientButton from '../components/Buttons/NewClientButton';
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
 						<Link href='/assets/upload'>Upload Assets</Link>
 					</Button>
 					<NewBriefButton />
-					<Button type='primary'>New Job</Button>
+					<NewJobButton />
 					<NewClientButton />
 				</>
 			)}

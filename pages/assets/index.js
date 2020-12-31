@@ -1,23 +1,26 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
+import { useQuery } from 'react-query';
 import { Select } from 'antd';
 
 import { readUserRole } from '../../lib/auth';
 import { readAllAssets } from '../../lib/assets';
-import { readAllJobs } from '../../lib/jobs';
+import { readAllNonNullJobCodes } from '../../lib/jobs';
 import AssetsContainer from '../../components/Assets/AssetsContainer';
+import EmptyData from '../../components/EmptyData';
 
-const { Option } = Select;
+export default function AssetsPage({ allAssets, preview }) {
+	const userRoleQuery = useQuery('userRole', readUserRole);
+	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
 
-export default function AssetsPage({ preview }) {
 	const [searchFilters, setSearchFilters] = useState({
 		jobCodes: [],
 		tags: [],
 	});
 
-	const userRoleQuery = useQuery('userRole', readUserRole);
+	if (!allAssets.length) {
+		return <EmptyData />;
+	}
 
 	if (userRoleQuery.status !== 'success') {
 		return <div>loading...</div>;
@@ -27,38 +30,35 @@ export default function AssetsPage({ preview }) {
 		return <div>Forbidden!</div>;
 	}
 
-	const assetsQuery = useQuery('assets', readAllAssets);
-	const jobsQuery = useQuery('jobs', readAllJobs);
+	let jobCodeOptions = [];
+	if (jobCodesQuery.status === 'success') {
+		for (let i = 0; i < jobCodesQuery.data.length; i++) {
+			const value = jobCodesQuery.data[i];
+			jobCodeOptions.push({ value });
+		}
+	}
 
 	const tagOptions = [];
-	for (let i = 0; i < 100; i++) {
+	for (let i = 0; i < 10; i++) {
 		const value = `${i.toString(36)}${i}`;
-		tagOptions.push(<Option key={value}>{value}</Option>);
+		tagOptions.push({ value });
 	}
 
 	return (
-		<>
-			<h1>ALL ASSETS</h1>
+		<div>
+			<h1>all assets</h1>
 			<SearchContainer>
-				{/* JOB CODE SEARCH BAR */}
-				{jobsQuery.status === 'success' && (
-					<div className='search-item-wrp'>
-						<label>Filter by Job Code</label>
-						<Select
-							mode='multiple'
-							allowClear
-							placeholder='Based on OR query'
-							onChange={(e) => {
-								setSearchFilters({ ...searchFilters, jobCodes: e });
-							}}
-						>
-							{jobsQuery.data.data.map((job) => (
-								<Select.Option key={job.job_code}>{job.job_code}</Select.Option>
-							))}
-						</Select>
-					</div>
-				)}
-				{/* TAGS SEARCH BAR */}
+				<div className='search-item-wrp'>
+					<label>Filter by Job Code</label>
+					<Select
+						allowClear
+						placeholder='Based on OR query'
+						onChange={(e) => {
+							setSearchFilters({ ...searchFilters, jobCodes: e });
+						}}
+						options={jobCodeOptions}
+					/>
+				</div>
 				<div className='search-item-wrp'>
 					<label>Filter by Asset Tags</label>
 					<Select
@@ -68,13 +68,12 @@ export default function AssetsPage({ preview }) {
 						onChange={(e) => {
 							setSearchFilters({ ...searchFilters, tags: e });
 						}}
-					>
-						{tagOptions}
-					</Select>
+						options={tagOptions}
+					/>
 				</div>
 			</SearchContainer>
-			<AssetsContainer query={assetsQuery} activeFilters={searchFilters} />
-		</>
+			<AssetsContainer activeFilters={searchFilters} />
+		</div>
 	);
 }
 
@@ -93,13 +92,9 @@ const SearchContainer = styled.div`
 `;
 
 export async function getStaticProps({ preview = false }) {
-	const queryClient = new QueryClient();
-
-	await queryClient.prefetchQuery('assets', readAllAssets(preview));
+	const allAssets = await readAllAssets(preview);
 
 	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
+		props: { allAssets, preview },
 	};
 }

@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
-import { Alert, Form, Input, Button, Select, Switch } from 'antd';
+import { Alert, DatePicker, Form, Input, Button, Select, Switch } from 'antd';
 
-import { updateJob, readAllJobs } from '../../lib/jobs';
+import { readAllJobs } from '../../lib/jobs';
+import { readAllBriefs, updateBrief } from '../../lib/briefs';
 
+const { Item } = Form;
 const { Option } = Select;
+const { TextArea } = Input;
 
-export default function BriefingFormStudio({ job }) {
+export default function EditBriefManager({ brief }) {
 	const [fileList, setFileList] = useState([]);
 	const [formValues, setFormValues] = useState({
 		jobType: undefined,
@@ -16,12 +19,18 @@ export default function BriefingFormStudio({ job }) {
 
 	const jobsQuery = useQuery('jobs', readAllJobs);
 
+	console.log('jobsQuery :>> ', jobsQuery);
+
 	const jobCodeOptions =
 		jobsQuery.status === 'success'
-			? jobsQuery.data.data.map((job) => job.job_code)
+			? jobsQuery.data
+					.filter((job) => job.job_code !== null)
+					.map((job) => job.job_code)
 			: [];
 
-	const onFinish = (values) => {
+	console.log('jobCodeOptions :>> ', jobCodeOptions);
+
+	const onFormFinish = (values) => {
 		const formValues = { ...values, job_code: job.job_code };
 		console.log('formValues :>> ', formValues);
 
@@ -29,10 +38,57 @@ export default function BriefingFormStudio({ job }) {
 	};
 
 	return (
-		<StyledForm name='brief_form' onFinish={onFinish} scrollToFirstError>
+		<StyledForm
+			name='edit_brief_manager_form'
+			onFinish={onFormFinish}
+			scrollToFirstError
+		>
+			<Item name='date_approved' label='Date Approved'>
+				<DatePicker />
+			</Item>
+			<Item name='brief_title' label='Brief Title'>
+				<Input />
+			</Item>
+			<Item name='job_code' label='Job Code'>
+				<Select allowClear>
+					<Option value='option_1'>Option 1</Option>
+					<Option value='option_2'>Option 2</Option>
+					<Option value='option_3'>Option 3</Option>
+				</Select>
+			</Item>
+			<Item name='users_permissions_user' label='Key Contact'>
+				<Select allowClear>
+					<Option value='option_1'>Option 1</Option>
+					<Option value='option_2'>Option 2</Option>
+					<Option value='option_3'>Option 3</Option>
+				</Select>
+			</Item>
+			<Item name='project_circumstances' label='Project Circumstances'>
+				<TextArea autoSize />
+			</Item>
+			<Item name='audiences' label='Audiences'>
+				INSERT TABLE THAT CONVERTS INTO JSON FORMAT
+			</Item>
+			<Item name='desired_outcomes' label='Desired Outcomes'>
+				<TextArea autoSize />
+			</Item>
+			<Item>
+				<Button type='primary' htmlType='submit'>
+					Update
+				</Button>
+			</Item>
+		</StyledForm>
+	);
+
+	/* 	return (
+		<StyledForm
+			name='edit_brief_manager_form'
+			onFinish={onFormFinish}
+			scrollToFirstError
+		>
 			{jobCodeOptions.length && (
 				<div className='form-item-wrp'>
-					<Form.Item label='Job Code' name='job_code'>
+					<Item label='Job Code' name='job_code'>
 						<Select
 							placeholder='Job Code'
 							allowClear
@@ -42,7 +98,7 @@ export default function BriefingFormStudio({ job }) {
 								<Option value={jobCode}>{jobCode}</Option>
 							))}
 						</Select>
-					</Form.Item>
+					</Item>
 					<Switch
 						checkedChildren='Visible'
 						unCheckedChildren='Hidden'
@@ -52,7 +108,7 @@ export default function BriefingFormStudio({ job }) {
 				</div>
 			)}
 			<div className='form-item-wrp'>
-				<Form.Item
+				<Item
 					label='Job Type'
 					name='job_type'
 					rules={[{ required: true, message: 'Required' }]}
@@ -67,14 +123,14 @@ export default function BriefingFormStudio({ job }) {
 						<Option value='job_type_2'>Job Type 2</Option>
 						<Option value='job_type_3'>Job Type 3</Option>
 					</Select>
-				</Form.Item>
-				<Form.Item name='job_type_visible'>
+				</Item>
+				<Item name='job_type_visible'>
 					<Switch
 						checkedChildren='Visible'
 						unCheckedChildren='Hidden'
 						defaultChecked={job.job_type_visible}
 					/>
-				</Form.Item>
+				</Item>
 			</div>
 			{formValues.jobType === 'job_type_1' && (
 				<Alert
@@ -86,7 +142,7 @@ export default function BriefingFormStudio({ job }) {
 				/>
 			)}
 			<div className='form-item-wrp'>
-				<Form.Item label='Job Description' name='job_desc'>
+				<Item label='Job Description' name='job_desc'>
 					<Input.TextArea
 						rows={6}
 						allowClear
@@ -95,22 +151,22 @@ export default function BriefingFormStudio({ job }) {
 							setFormValues({ ...formValues, jobDesc: e.target.value })
 						}
 					/>
-				</Form.Item>
-				<Form.Item name='job_desc_visible'>
+				</Item>
+				<Item name='job_desc_visible'>
 					<Switch
 						checkedChildren='Visible'
 						unCheckedChildren='Hidden'
 						defaultChecked={job.job_description_visible}
 					/>
-				</Form.Item>
+				</Item>
 			</div>
-			<Form.Item>
+			<Item>
 				<Button type='primary' htmlType='submit'>
 					Update
 				</Button>
-			</Form.Item>
-		</StyledForm>
-	);
+			</Item>
+		</StyledForm> 
+	);*/
 }
 
 const StyledForm = styled(Form)`

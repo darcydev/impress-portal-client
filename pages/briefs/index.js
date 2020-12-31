@@ -1,10 +1,10 @@
-import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
+import Link from 'next/link';
+import { useQuery } from 'react-query';
 
 import { readUserRole } from '../../lib/auth';
 import { readAllBriefs } from '../../lib/briefs';
 
-export default function BriefsPage({ preview }) {
+export default function BriefsPage({ allBriefs, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status !== 'success') {
@@ -15,35 +15,39 @@ export default function BriefsPage({ preview }) {
 		return <div>Forbidden!</div>;
 	}
 
-	const briefsQuery = useQuery('briefs', readAllBriefs);
-
-	const { status, data, isError, isFetching } = briefsQuery;
-
-	if (status === 'error') {
-		return <div>error...</div>;
+	if (!allBriefs.length) {
+		<p>loading...</p>;
 	}
 
-	if (status === 'loading') {
-		return <div>loading...</div>;
-	}
+	console.log('allBriefs :>> ', allBriefs);
 
 	return (
 		<div>
 			<h2>list of all briefs</h2>
-			<div className='data-container'>insert all briefs here</div>
-			{isFetching && <p>updating...</p>}
+			<div className='data-container'>
+				<ul>
+					{allBriefs.map((brief) => {
+						const { id, brief_title, brief_status } = brief;
+
+						return (
+							<li>
+								<p>Brief title: {brief_title}</p>
+								<p>Brief status: {brief_status}</p>
+								<Link href={`/briefs/${id}`}>View</Link>
+								<Link href={`/briefs/edit/${id}`}>Edit</Link>
+							</li>
+						);
+					})}
+				</ul>
+			</div>
 		</div>
 	);
 }
 
 export async function getStaticProps({ preview = false }) {
-	const queryClient = new QueryClient();
-
-	await queryClient.prefetchQuery('briefs', readAllBriefs(preview));
+	const allBriefs = await readAllBriefs(preview);
 
 	return {
-		props: {
-			dehydratedState: dehydrate(queryClient),
-		},
+		props: { allBriefs, preview },
 	};
 }

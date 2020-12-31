@@ -1,22 +1,21 @@
-import Link from 'next/link';
 import styled from 'styled-components';
-import { Skeleton } from 'antd';
+import { useQuery } from 'react-query';
 
+import { readAllAssets } from '../../lib/assets';
 import AssetThumbnail from './AssetThumbnail';
 import EmptyData from '../EmptyData';
 
-export default function AssetsContainer({ query, activeFilters }) {
-	const { status, isLoading, data } = query;
+export default function AssetsContainer({ activeFilters }) {
+	const assetsQuery = useQuery('allAssets', readAllAssets);
 
-	if (status === 'error')
-		return (
-			<div>
-				<h1>Error!</h1>
-			</div>
-		);
+	const { status, data } = assetsQuery;
 
-	if (isLoading) {
-		return <Skeleton active />;
+	if (status === 'error') {
+		return <p>error...</p>;
+	}
+
+	if (status === 'loading') {
+		return <p>loading...</p>;
 	}
 
 	if (!data) {

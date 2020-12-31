@@ -3,13 +3,9 @@ import styled from 'styled-components';
 import { Form, Input, Button, message } from 'antd';
 
 import { readUserRole } from '../../../lib/auth';
-import {
-	readAllClients,
-	readClientById,
-	updateClient,
-} from '../../../lib/clients';
+import { readAllJobs, readJobById, updateJob } from '../../../lib/jobs';
 
-export default function EditClient({ client, preview }) {
+export default function EditJob({ job, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status === 'error') {
@@ -25,38 +21,30 @@ export default function EditClient({ client, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
-		const updatedClient = await updateClient(client.id, values);
+		const updatedJob = await updateJob(job.id, values);
 
-		if (updatedClient) {
+		if (updatedJob) {
 			message.success('Updated');
 		} else {
 			message.fail('Updated failed');
 		}
 	};
 
-	const { client_code, client_description, client_title, jobs } = client;
+	const { job_code } = job;
 
 	return (
 		<div>
-			<h1>Edit single client page</h1>
+			<h1>Edit single job page</h1>
 			<StyledForm
-				name='edit_client_form'
+				name='edit_job_form'
 				onFinish={onFormFinish}
 				scrollToFirstError
 				initialValues={{
-					['client_code']: client_code,
-					['client_name']: client_title,
-					['client_description']: client_description,
+					['job_code']: job_code,
 				}}
 			>
-				<Form.Item name='client_code' label='Client code'>
+				<Form.Item name='job_code' label='Job code'>
 					<Input />
-				</Form.Item>
-				<Form.Item name='client_name' label='Client name'>
-					<Input />
-				</Form.Item>
-				<Form.Item name='client_description' label='Client description'>
-					<Input.TextArea autoSize={{ minRows: 2, maxRows: 8 }} />
 				</Form.Item>
 				<Form.Item>
 					<Button type='primary' htmlType='submit'>
@@ -82,22 +70,22 @@ const StyledForm = styled(Form)`
 `;
 
 export async function getStaticProps({ params, preview = false }) {
-	const client = await readClientById(params.id, preview);
+	const job = await readJobById(params.id, preview);
 
 	return {
 		props: {
-			client,
+			job,
 			preview,
 		},
 	};
 }
 
 export async function getStaticPaths() {
-	const allClients = await readAllClients();
+	const allJobs = await readAllJobs();
 
-	const paths = allClients.map((client) => ({
+	const paths = allJobs.map((job) => ({
 		params: {
-			id: client.id.toString(),
+			id: job.id.toString(),
 		},
 	}));
 
