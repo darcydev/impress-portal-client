@@ -45,7 +45,7 @@ export default function BriefingFormClient({ job }) {
 		setFileList(newFileList);
 	};
 
-	console.log('fileList :>> ', fileList);
+	// console.log('fileList :>> ', fileList);
 
 	return (
 		<StyledForm name='briefing_form_client' onFinish={onFinish}>

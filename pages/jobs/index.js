@@ -1,21 +1,24 @@
-import Router from 'next/router';
 import Link from 'next/link';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 
 import { readAllJobs } from '../../lib/jobs';
-import { isLoggedIn } from '../../lib/auth';
+import { readUserRole } from '../../lib/auth';
 
 export default function JobsPage({ preview }) {
-	// process.browser makes sure that the browser is running client-side
-	if (process.browser && !isLoggedIn()) {
-		Router.push('/');
-		return null;
+	const userRoleQuery = useQuery('userRole', readUserRole);
+
+	if (userRoleQuery.status !== 'success') {
+		return <div>loading...</div>;
+	}
+
+	if (userRoleQuery.data !== 'Manager') {
+		return <div>Forbidden!</div>;
 	}
 
 	const jobsQuery = useQuery('jobs', readAllJobs);
 
-	const { status, data, isError, isFetching } = jobsQuery;
+	const { status, data, isFetching } = jobsQuery;
 
 	if (status === 'error') {
 		return <div>error...</div>;

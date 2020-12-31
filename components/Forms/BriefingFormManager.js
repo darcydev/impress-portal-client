@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 import { Alert, Form, Input, Button, Select, Switch } from 'antd';
 
-import { updateJob } from '../../lib/jobs';
+import { updateJob, readAllJobs } from '../../lib/jobs';
 
 const { Option } = Select;
 
@@ -13,33 +14,43 @@ export default function BriefingFormStudio({ job }) {
 		jobDesc: '',
 	});
 
+	const jobsQuery = useQuery('jobs', readAllJobs);
+
+	const jobCodeOptions =
+		jobsQuery.status === 'success'
+			? jobsQuery.data.data.map((job) => job.job_code)
+			: [];
+
 	const onFinish = (values) => {
 		const formValues = { ...values, job_code: job.job_code };
 		console.log('formValues :>> ', formValues);
 
-		updateJob(formValues);
+		// updateJob(formValues);
 	};
-
-	console.log('job :>> ', job);
-	console.log('formValues :>> ', formValues);
 
 	return (
 		<StyledForm name='brief_form' onFinish={onFinish} scrollToFirstError>
-			<div className='form-item-wrp'>
-				<Form.Item label='Job Code' name='job_code'>
-					<Input
-						value={job.job_code}
-						defaultValue={job.job_code}
-						disabled={true}
+			{jobCodeOptions.length && (
+				<div className='form-item-wrp'>
+					<Form.Item label='Job Code' name='job_code'>
+						<Select
+							placeholder='Job Code'
+							allowClear
+							defaultValue={job.job_code}
+						>
+							{jobCodeOptions.map((jobCode) => (
+								<Option value={jobCode}>{jobCode}</Option>
+							))}
+						</Select>
+					</Form.Item>
+					<Switch
+						checkedChildren='Visible'
+						unCheckedChildren='Hidden'
+						defaultUnChecked
+						disabled
 					/>
-				</Form.Item>
-				<Switch
-					checkedChildren='Visible'
-					unCheckedChildren='Hidden'
-					defaultUnChecked
-					disabled
-				/>
-			</div>
+				</div>
+			)}
 			<div className='form-item-wrp'>
 				<Form.Item
 					label='Job Type'

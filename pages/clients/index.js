@@ -1,14 +1,18 @@
 import Link from 'next/link';
-import Router from 'next/router';
+import { useQuery } from 'react-query';
 
-import { isLoggedIn } from '../../lib/auth';
+import { readUserRole } from '../../lib/auth';
 import { readAllClients } from '../../lib/clients';
 
 export default function ClientsPage({ allClients, preview }) {
-	// process.browser makes sure that the browser is running client-side
-	if (process.browser && !isLoggedIn()) {
-		Router.push('/');
-		return null;
+	const userRoleQuery = useQuery('userRole', readUserRole);
+
+	if (userRoleQuery.status !== 'success') {
+		return <div>loading...</div>;
+	}
+
+	if (userRoleQuery.data !== 'Manager') {
+		return <div>Forbidden!</div>;
 	}
 
 	return (
@@ -16,13 +20,14 @@ export default function ClientsPage({ allClients, preview }) {
 			<h2>list of all clients</h2>
 			{allClients &&
 				allClients.map((client) => {
-					const { id, client_code } = client;
+					const { id, client_title, client_code } = client;
 
 					return (
 						<div key={id}>
-							<h4>Client title</h4>
-							<h5>{client_code}</h5>
-							<Link href={`/clients/${client_code}`}>view</Link>
+							<h4>Client title: {client_title}</h4>
+							<h5>Client code: {client_code}</h5>
+							<Link href={`/clients/${id}`}>view</Link>
+							<Link href={`/clients/edit/${id}`}>edit</Link>
 						</div>
 					);
 				})}

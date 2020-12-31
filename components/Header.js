@@ -1,19 +1,13 @@
-import { useContext } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 
 import { isLoggedIn } from '../lib/auth';
-import { AuthContext } from '../context/AuthContext';
 
 import ThemeToggler from './ThemeToggler';
 import LogoutButton from './Buttons/LogoutButton';
-import NewBriefButton from './Buttons/NewBriefButton';
 
 export default function Header() {
-	const { user } = useContext(AuthContext);
 	const isAuth = isLoggedIn();
-
-	const userRole = user.role?.name || undefined;
 
 	return (
 		<StyledHeader>
@@ -25,24 +19,17 @@ export default function Header() {
 					{isAuth ? (
 						<ul>
 							<li>
-								<Link href='/clients'>Clients</Link>
+								<Link href='/assets'>Assets</Link>
+							</li>
+							<li>
+								<Link href='/briefs'>Briefs</Link>
 							</li>
 							<li>
 								<Link href='/jobs'>Jobs</Link>
 							</li>
 							<li>
-								<Link href='/assets'>Assets</Link>
+								<Link href='/clients'>Clients</Link>
 							</li>
-							{(userRole === 'Authenticated' || userRole === 'Manager') && (
-								<li>
-									<Link href='/assets/upload'>Upload Assets</Link>
-								</li>
-							)}
-							{(userRole === 'Authenticated' || userRole === 'Manager') && (
-								<li>
-									<NewBriefButton />
-								</li>
-							)}
 							<li>
 								<LogoutButton />
 							</li>

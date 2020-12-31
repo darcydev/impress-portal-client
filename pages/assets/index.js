@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import Router from 'next/router';
 import styled from 'styled-components';
 import { QueryClient, useQuery } from 'react-query';
 import { dehydrate } from 'react-query/hydration';
 import { Select } from 'antd';
 
-import { isLoggedIn } from '../../lib/auth';
+import { readUserRole } from '../../lib/auth';
 import { readAllAssets } from '../../lib/assets';
 import { readAllJobs } from '../../lib/jobs';
 import AssetsContainer from '../../components/Assets/AssetsContainer';
@@ -18,10 +17,14 @@ export default function AssetsPage({ preview }) {
 		tags: [],
 	});
 
-	// process.browser makes sure that the browser is running client-side
-	if (process.browser && !isLoggedIn()) {
-		Router.push('/');
-		return null;
+	const userRoleQuery = useQuery('userRole', readUserRole);
+
+	if (userRoleQuery.status !== 'success') {
+		return <div>loading...</div>;
+	}
+
+	if (userRoleQuery.data !== 'Manager') {
+		return <div>Forbidden!</div>;
 	}
 
 	const assetsQuery = useQuery('assets', readAllAssets);
