@@ -5,43 +5,51 @@ import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
 import { useQuery } from 'react-query';
 
-import { uploadMedia, createMedia } from '../../lib/media';
+import { createMedia } from '../../lib/media';
 import { createAsset, updateAsset } from '../../lib/assets';
 import { readJobByJobCode, readAllNonNullJobCodes } from '../../lib/jobs';
 
 const { Option } = Select;
 
-export default function AssetUpload() {
+export default function AssetUpload({ briefId = undefined }) {
 	const [fileList, setFileList] = useState([]);
 
-	const onFormFinish = async (values) => {
-		console.log('values :>> ', values);
-		console.log('fileList :>> ', fileList);
+	let newFileList = [...fileList];
 
+	const onFileAdded = (file) => {
+		newFileList.push(file);
+		setFileList(newFileList);
+	};
+
+	// TODO can this be refactored?
+	const onFileRemoved = (file) => {
+		const index = fileList.indexOf(file);
+		const newFileList = fileList.slice();
+		newFileList.splice(index, 1);
+		setFileList(newFileList);
+	};
+
+	const onFormFinish = async (values) => {
 		let createdAssetBody = {};
 
 		if (values.job_code) {
 			const { id } = await readJobByJobCode(values.job_code);
 
-			createdAssetBody = JSON.stringify({ job: id });
+			createdAssetBody = { ...createdAssetBody, job: id };
 		}
 
-		/* TODO check if uploaded to brief */
+		if (briefId) {
+			createdAssetBody = { ...createdAssetBody, brief: briefId };
+		}
 
-		const createdAsset = await createAsset(createdAssetBody);
-
-		console.log('createdAsset :>> ', createdAsset);
-
-		const createdMedia = await createMedia(createdAsset.id, fileList);
-
-		console.log('createdMedia :>> ', createdMedia);
-
-		// create the body the update the asset
+		createdAssetBody = JSON.stringify(createdAssetBody);
 		const generalTags = values.tags || [];
 
 		fileList.forEach(async (file) => {
-			console.log('file :>> ', file);
 			const { uid } = file;
+
+			const createdAsset = await createAsset(createdAssetBody);
+			const createdMedia = await createMedia(createdAsset.id, file);
 
 			const specificTags = values[`${uid}Tags`] || [];
 			const assetTags = [...new Set([...generalTags, ...specificTags])];
@@ -61,23 +69,12 @@ export default function AssetUpload() {
 
 			const updatedAsset = await updateAsset(createdAsset.id, body);
 
-			console.log('updatedAsset :>> ', updatedAsset);
+			if (updatedAsset) {
+				message.success(`${updatedAsset.file.name} uploaded`);
+			} else {
+				message.fail(`${updatedAsset.file.name} failed`);
+			}
 		});
-	};
-
-	let newFileList = [...fileList];
-
-	const onFileAdded = (file) => {
-		newFileList.push(file);
-		setFileList(newFileList);
-	};
-
-	// TODO can this be refactored?
-	const onFileRemoved = (file) => {
-		const index = fileList.indexOf(file);
-		const newFileList = fileList.slice();
-		newFileList.splice(index, 1);
-		setFileList(newFileList);
 	};
 
 	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
@@ -103,6 +100,7 @@ export default function AssetUpload() {
 
 	return (
 		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
+			<h1>Upload Assets Form</h1>
 			<Form.Item name='job_code' label='Job code'>
 				<Select
 					showSearch
@@ -150,46 +148,31 @@ export default function AssetUpload() {
 									</button>
 								</div>
 								<div className='form-item-wrp'>
-									<Form.Item
-										name={`${uid}Tags`}
-										label='Insert tags for this specific asset'
-									>
+									<Form.Item name={`${uid}Tags`}>
 										<Select
 											mode='multiple'
-											placeholder='Select tags for this asset'
+											placeholder='Select specific tags for this asset'
 											options={options}
 										/>
 									</Form.Item>
 								</div>
 								<div className='form-item-wrp'>
-									<Form.Item
-										name={`${uid}ServerLocation`}
-										label='Server location'
-									>
-										<Input />
+									<Form.Item name={`${uid}ServerLocation`}>
+										<Input placeholder='Server location' />
 									</Form.Item>
 								</div>
 								<div className='form-item-wrp'>
-									<Form.Item
-										name={`${uid}AssetDescription`}
-										label='Asset Description'
-									>
-										<Input />
+									<Form.Item name={`${uid}AssetDescription`}>
+										<Input placeholder='Asset Description' />
 									</Form.Item>
 								</div>
 								<div className='form-item-wrp'>
-									<Form.Item
-										name={`${uid}ExternalLocation`}
-										label='External location'
-									>
-										<Input />
+									<Form.Item name={`${uid}ExternalLocation`}>
+										<Input placeholder='External location (eg YouTube link)' />
 									</Form.Item>
 								</div>
 								<div className='form-item-wrp'>
-									<Form.Item
-										name={`${uid}VisibilityReduction`}
-										label='Visibility Restriction'
-									>
+									<Form.Item name={`${uid}VisibilityRestriction`}>
 										<Select
 											allowClear
 											placeholder='Select visibility restriction'
@@ -211,7 +194,7 @@ export default function AssetUpload() {
 			</StyledFileList>
 			<Form.Item>
 				<Button type='primary' htmlType='submit'>
-					Submit
+					Upload Assets
 				</Button>
 			</Form.Item>
 		</StyledForm>
@@ -222,7 +205,7 @@ const StyledForm = styled(Form)`
 	.ant-form-item {
 		display: flex;
 		flex-direction: column;
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 
 		.ant-form-item-label {
 			text-align: left;
@@ -241,6 +224,11 @@ const StyledForm = styled(Form)`
 const StyledFileList = styled.div`
 	ul {
 		li {
+			background: #efefef;
+			border-radius: 20px;
+			padding: 20px;
+			margin: 20px 0;
+
 			.file-wrp {
 				display: flex;
 				align-items: center;
@@ -250,8 +238,8 @@ const StyledFileList = styled.div`
 					background: #efefef;
 				}
 
-				p {
-					margin: 10px 0;
+				h3 {
+					margin: 0 0 10px 0;
 				}
 
 				button {
