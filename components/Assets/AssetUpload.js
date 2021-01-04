@@ -11,7 +11,11 @@ import JobCodeSelect from '../Select/JobCodeSelect';
 
 const { Option } = Select;
 
-export default function AssetUpload({ briefId = undefined }) {
+export default function AssetUpload({
+	jobCodeDefined,
+	jobCode,
+	briefId = undefined,
+}) {
 	const [fileList, setFileList] = useState([]);
 
 	let newFileList = [...fileList];
@@ -32,7 +36,11 @@ export default function AssetUpload({ briefId = undefined }) {
 	const onFormFinish = async (values) => {
 		let createdAssetBody = {};
 
-		if (values.job_code) {
+		if (jobCodeDefined && jobCode) {
+			const { id } = await readJobByJobCode(jobCode);
+
+			createdAssetBody = { ...createdAssetBody, job: id };
+		} else if (values.job_code) {
 			const { id } = await readJobByJobCode(values.job_code);
 
 			createdAssetBody = { ...createdAssetBody, job: id };
@@ -89,10 +97,12 @@ export default function AssetUpload({ briefId = undefined }) {
 
 	return (
 		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
-			<h1>Upload Assets Form</h1>
-			<Form.Item name='job_code' label='Job code'>
-				<JobCodeSelect />
-			</Form.Item>
+			<h2>Upload Assets</h2>
+			{!jobCodeDefined && (
+				<Form.Item name='job_code' label='Job code'>
+					<JobCodeSelect />
+				</Form.Item>
+			)}
 			<Form.Item name='tags' label='Tags'>
 				<Select
 					mode='multiple'

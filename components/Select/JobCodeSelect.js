@@ -3,7 +3,10 @@ import { Select } from 'antd';
 
 import { readAllNonNullJobCodes } from '../../lib/jobs';
 
-export default function JobCodeSelect() {
+export default function JobCodeSelect({
+	passChildData,
+	defaultValue = undefined,
+}) {
 	const query = useQuery('jobCodes', readAllNonNullJobCodes);
 
 	const { status, data } = query;
@@ -20,15 +23,18 @@ export default function JobCodeSelect() {
 
 	for (let i = 0; i < data.length; i++) {
 		const value = data[i];
-		jobCodeOptions.push({ value });
+
+		jobCodeOptions.push({ value: value.id, label: value.job_code });
 	}
 
 	return (
 		<Select
 			showSearch
 			allowClear
+			defaultValue={defaultValue}
 			placeholder='Select Job Code'
 			options={jobCodeOptions}
+			onChange={(e) => passChildData(e)}
 		/>
 	);
 }
