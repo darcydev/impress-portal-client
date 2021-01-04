@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { Form, Select, Button, Upload, Input, message } from 'antd';
 import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
-import { useQuery } from 'react-query';
 
 import { createMedia } from '../../lib/media';
 import { createAsset, updateAsset } from '../../lib/assets';
-import { readJobByJobCode, readAllNonNullJobCodes } from '../../lib/jobs';
+import { readJobByJobCode } from '../../lib/jobs';
+import JobCodeSelect from '../Select/JobCodeSelect';
 
 const { Option } = Select;
 
@@ -77,17 +77,6 @@ export default function AssetUpload({ briefId = undefined }) {
 		});
 	};
 
-	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
-
-	let jobCodeOptions = [];
-
-	if (jobCodesQuery.status === 'success') {
-		for (let i = 0; i < jobCodesQuery.data.length; i++) {
-			const value = jobCodesQuery.data[i];
-			jobCodeOptions.push({ value });
-		}
-	}
-
 	// TODO fetch from API
 	const options = [];
 	for (let i = 0; i < 30; i++) {
@@ -102,12 +91,7 @@ export default function AssetUpload({ briefId = undefined }) {
 		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
 			<h1>Upload Assets Form</h1>
 			<Form.Item name='job_code' label='Job code'>
-				<Select
-					showSearch
-					allowClear
-					placeholder='Select Job Code'
-					options={jobCodeOptions}
-				/>
+				<JobCodeSelect />
 			</Form.Item>
 			<Form.Item name='tags' label='Tags'>
 				<Select
