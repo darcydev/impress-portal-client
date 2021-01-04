@@ -1,8 +1,35 @@
 import Link from 'next/link';
 import { useQuery } from 'react-query';
+import { Table, Tag, Space } from 'antd';
 
 import { readUserRole } from '../../lib/auth';
 import { readAllBriefs } from '../../lib/briefs';
+
+const columns = [
+	{
+		title: 'Title',
+		dataIndex: 'brief_title',
+		key: 'brief_title',
+	},
+	{
+		title: 'Job Type',
+		dataIndex: 'brief_type',
+		key: 'brief_type',
+	},
+	{
+		title: 'Status',
+		key: 'brief_status',
+		dataIndex: 'brief_status',
+		render: (brief_status) => (
+			<Tag key={brief_status}>{brief_status.toUpperCase()}</Tag>
+		),
+	},
+	{
+		title: 'Action',
+		key: 'action',
+		render: (text, record) => <Link href={`/briefs/${record.id}`}>View</Link>,
+	},
+];
 
 export default function BriefsPage({ allBriefs, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
@@ -23,23 +50,8 @@ export default function BriefsPage({ allBriefs, preview }) {
 
 	return (
 		<div>
-			<h2>list of all briefs</h2>
-			<div className='data-container'>
-				<ul>
-					{allBriefs.map((brief) => {
-						const { id, brief_title, brief_status } = brief;
-
-						return (
-							<li>
-								<p>Brief title: {brief_title}</p>
-								<p>Brief status: {brief_status}</p>
-								<Link href={`/briefs/${id}`}>View</Link>
-								<Link href={`/briefs/edit/${id}`}>Edit</Link>
-							</li>
-						);
-					})}
-				</ul>
-			</div>
+			<div>INSERT SEARCH CONTAINER</div>
+			<Table columns={columns} dataSource={allBriefs} />
 		</div>
 	);
 }

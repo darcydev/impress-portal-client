@@ -44,6 +44,8 @@ export default function AssetsPage({ allAssets, preview }) {
 		tagOptions.push({ value });
 	}
 
+	console.log('allAssets :>> ', allAssets);
+
 	return (
 		<div>
 			<h1>all assets</h1>

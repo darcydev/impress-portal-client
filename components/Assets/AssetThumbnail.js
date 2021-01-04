@@ -7,8 +7,6 @@ import AssetFormat from './AssetFormat';
 const API_URL = process.env.PUBLIC_API_URL;
 
 export default function AssetThumbnail({ id, file, title, job, tags }) {
-	/* 	console.log('file :>> ', file); */
-
 	let fileUrl;
 
 	if (!file.formats) {
@@ -17,15 +15,13 @@ export default function AssetThumbnail({ id, file, title, job, tags }) {
 		fileUrl = file.formats.thumbnail.url;
 	}
 
-	/* 	console.log('fileUrl :>> ', fileUrl); */
-
 	return (
 		<StyledContainer>
 			<div className='img-wrp'>
 				<img src={`${API_URL}${fileUrl}`} alt={file.alternativeText} />
 			</div>
 			<div className='txt-wrp'>
-				<p className='job-code'>Job code: {job.job_code}</p>
+				<p className='job-code'>Job code: {job?.job_code}</p>
 				<p className='file-format'>
 					File format: <AssetFormat assetFormat={file.mime.split('/')[1]} />
 				</p>
