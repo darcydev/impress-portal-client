@@ -25,11 +25,14 @@ export default function AssetsContainer({ activeFilters }) {
 	/* FILTERING */
 	let filteredData = data;
 
-	const { jobCodes, tags } = activeFilters;
+	const { description, jobCodes, tags } = activeFilters;
 
 	if (jobCodes.length) {
+		// First, filter out all assets with empty jobCodes
+		filteredData = filteredData.filter((asset) => asset.job);
+
 		filteredData = filteredData.filter((asset) =>
-			jobCodes.includes(asset.job.job_code)
+			jobCodes.includes(asset.job.id)
 		);
 	}
 
@@ -38,14 +41,6 @@ export default function AssetsContainer({ activeFilters }) {
 		filteredData = filteredData.filter((asset) => asset.tags);
 
 		// 2) filter out all assets with do not have all of the tags in their tags array
-		// ['foo', 'bar', 'cherry', 'apple'];
-
-		// check if EVERY one is in array
-		// ['foo'] => TRUE
-		// ['foo', 'bar'] => TRUE
-		// ['foo', 'cherry', 'banana'] => FALSE
-
-		// the below function is working, but very messy
 		// TODO: REFACTOR -> ASK STACK OVERFLOW HOW TO REFACTOR THIS
 		filteredData = filteredData.filter((asset) => {
 			let assetIncluded = true;
@@ -58,6 +53,16 @@ export default function AssetsContainer({ activeFilters }) {
 
 			return assetIncluded;
 		});
+	}
+
+	if (description) {
+		// 1) filter out all assets with empty description
+		filteredData = filteredData.filter((asset) => asset.asset_description);
+
+		// 2) filter out all assets which have the search string
+		filteredData = filteredData.filter((asset) =>
+			asset.asset_description.includes(description)
+		);
 	}
 
 	if (!filteredData.length) {

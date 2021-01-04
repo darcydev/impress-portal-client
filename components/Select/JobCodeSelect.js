@@ -27,6 +27,12 @@ export default function JobCodeSelect({
 		jobCodeOptions.push({ value: value.id, label: value.job_code });
 	}
 
+	const handleChange = (e) => {
+		if (passChildData) {
+			passChildData(e);
+		}
+	};
+
 	return (
 		<Select
 			showSearch
@@ -34,7 +40,7 @@ export default function JobCodeSelect({
 			defaultValue={defaultValue}
 			placeholder='Select Job Code'
 			options={jobCodeOptions}
-			onChange={(e) => passChildData(e)}
+			onChange={(e) => handleChange(e)}
 		/>
 	);
 }

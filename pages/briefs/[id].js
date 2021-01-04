@@ -21,8 +21,6 @@ export default function Brief({ brief, preview }) {
 		return <p>forbidden...</p>;
 	}
 
-	console.log('brief :>> ', brief);
-
 	const {
 		assets,
 		audiences,

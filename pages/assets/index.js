@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
-import { Select } from 'antd';
+import { Select, Input } from 'antd';
 
 import { readUserRole } from '../../lib/auth';
 import { readAllAssets } from '../../lib/assets';
@@ -10,13 +10,14 @@ import AssetsContainer from '../../components/Assets/AssetsContainer';
 import EmptyData from '../../components/EmptyData';
 
 export default function AssetsPage({ allAssets, preview }) {
-	const userRoleQuery = useQuery('userRole', readUserRole);
-	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
-
 	const [searchFilters, setSearchFilters] = useState({
 		jobCodes: [],
 		tags: [],
+		description: '',
 	});
+
+	const userRoleQuery = useQuery('userRole', readUserRole);
+	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
 
 	if (!allAssets.length) {
 		return <EmptyData />;
@@ -30,12 +31,20 @@ export default function AssetsPage({ allAssets, preview }) {
 		return <div>Forbidden!</div>;
 	}
 
+	if (jobCodesQuery.status === 'error') {
+		return <p>error...</p>;
+	}
+
+	if (jobCodesQuery.status === 'loading') {
+		return <p>loading...</p>;
+	}
+
 	let jobCodeOptions = [];
-	if (jobCodesQuery.status === 'success') {
-		for (let i = 0; i < jobCodesQuery.data.length; i++) {
-			const value = jobCodesQuery.data[i];
-			jobCodeOptions.push({ value });
-		}
+
+	for (let i = 0; i < jobCodesQuery.data.length; i++) {
+		const value = jobCodesQuery.data[i];
+
+		jobCodeOptions.push({ value: value.id, label: value.job_code });
 	}
 
 	const tagOptions = [];
@@ -45,14 +54,15 @@ export default function AssetsPage({ allAssets, preview }) {
 	}
 
 	console.log('allAssets :>> ', allAssets);
+	console.log('searchFilters :>> ', searchFilters);
 
 	return (
-		<div>
-			<h1>all assets</h1>
+		<>
 			<SearchContainer>
 				<div className='search-item-wrp'>
 					<label>Filter by Job Code</label>
 					<Select
+						mode='multiple'
 						allowClear
 						placeholder='Based on OR query'
 						onChange={(e) => {
@@ -73,9 +83,20 @@ export default function AssetsPage({ allAssets, preview }) {
 						options={tagOptions}
 					/>
 				</div>
+				<div className='search-item-wrp'>
+					<label>Filter by Asset Description</label>
+					<Input
+						onChange={(e) => {
+							setSearchFilters({
+								...searchFilters,
+								description: e.target.value,
+							});
+						}}
+					/>
+				</div>
 			</SearchContainer>
 			<AssetsContainer activeFilters={searchFilters} />
-		</div>
+		</>
 	);
 }
 
