@@ -10,10 +10,11 @@ import { readJobByJobCode } from '../../lib/jobs';
 import JobCodeSelect from '../Select/JobCodeSelect';
 
 const { Option } = Select;
+const { Item } = Form;
 
 export default function AssetUpload({
 	jobCodeDefined,
-	jobCode,
+	jobId,
 	briefId = undefined,
 }) {
 	const [fileList, setFileList] = useState([]);
@@ -99,18 +100,18 @@ export default function AssetUpload({
 		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
 			<h2>Upload Assets</h2>
 			{!jobCodeDefined && (
-				<Form.Item name='job_code' label='Job code'>
+				<Item name='job_code' label='Job code'>
 					<JobCodeSelect />
-				</Form.Item>
+				</Item>
 			)}
-			<Form.Item name='tags' label='Tags'>
+			<Item name='tags' label='Tags'>
 				<Select
 					mode='multiple'
 					allowClear
 					placeholder='Select tags'
 					options={options}
 				/>
-			</Form.Item>
+			</Item>
 			<Form.Item name='file_list' label='File List'>
 				<Upload.Dragger
 					name='file'

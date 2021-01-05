@@ -9,10 +9,10 @@ export default function BriefHeader({ brief }) {
 			title={brief.brief_title}
 			extra={[
 				<Button key='1'>
-					<Link href={`/clients/${brief.job.client}`}>View Client</Link>
+					<Link href={`/clients/${brief.job?.client}`}>View Client</Link>
 				</Button>,
 				<Button key='2'>
-					<Link href={`/jobs/${brief.job.id}`}>View Job</Link>
+					<Link href={`/jobs/${brief.job?.id}`}>View Job</Link>
 				</Button>,
 				<Button key='3' type='primary'>
 					<Link href={`/briefs/edit/${brief.id}`}>Update Brief</Link>

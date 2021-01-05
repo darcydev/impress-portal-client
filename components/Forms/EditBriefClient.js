@@ -1,126 +1,93 @@
-import { useState } from 'react';
 import styled from 'styled-components';
-import {
-	Alert,
-	Form,
-	Input,
-	Button,
-	Select,
-	Switch,
-	Upload,
-	message,
-} from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
-import { ImBin2 } from 'react-icons/im';
+import { Form, Input, message } from 'antd';
 
-import { updateJob } from '../../lib/jobs';
+import { updateBrief } from '../../lib/briefs';
+import SubmitButton from './FormItems/SubmitButton';
 
-const { Option } = Select;
+const { Item } = Form;
+const { TextArea } = Input;
 
-export default function EditBriefClient({ job }) {
-	const [fileList, setFileList] = useState([]);
+export default function EditBriefClient({ brief }) {
+	console.log('brief :>> ', brief);
+
+	const onFormFinish = async (values) => {
+		const updatedBrief = await updateBrief(brief.id, values);
+
+		if (updatedBrief) {
+			message.success('Success!');
+		} else {
+			message.fail('Oops! Something went wrong');
+		}
+	};
+
 	const {
-		job_type,
-		job_type_visible,
-		job_description,
-		job_description_visible,
-	} = job;
-
-	const onFinish = (values) => {
-		console.log('values :>> ', values);
-	};
-
-	let newFileList = [...fileList];
-
-	const onFileAdded = (file) => {
-		newFileList.push(file);
-		setFileList(newFileList);
-	};
-
-	// TODO can this be refactored?
-	const onFileRemoved = (file) => {
-		const index = fileList.indexOf(file);
-		const newFileList = fileList.slice();
-		newFileList.splice(index, 1);
-		setFileList(newFileList);
-	};
-
-	// console.log('fileList :>> ', fileList);
+		brief_project_circumstances,
+		brief_project_circumstances_visible,
+		brief_desired_outcomes,
+		brief_desired_outcomes_visible,
+		brief_design_direction,
+		brief_design_direction_visible,
+		brief_project_delivery,
+		brief_project_delivery_visible,
+	} = brief;
 
 	return (
-		<StyledForm name='edit_brief_client_form' onFinish={onFinish}>
-			{job_type_visible && (
-				<div className='form-item-wrp'>
-					<h2>Job Type:</h2>
-					<p>{job_type}</p>
-				</div>
+		<StyledForm
+			name='edit_brief_client_form'
+			onFinish={onFormFinish}
+			initialValues={{
+				brief_project_circumstances,
+				brief_desired_outcomes,
+				brief_design_direction,
+				brief_project_delivery,
+			}}
+		>
+			{brief_project_circumstances_visible && (
+				<Item name='brief_project_circumstances' label='Project Circumstances'>
+					<TextArea rows={4} />
+				</Item>
 			)}
-			{job_description_visible && (
-				<div className='form-item-wrp'>
-					<h2>Description:</h2>
-					<p>{job_description}</p>
-				</div>
+			{brief_desired_outcomes_visible && (
+				<Item name='brief_desired_outcomes' label='Desired Outcomes'>
+					<TextArea rows={4} />
+				</Item>
 			)}
-			<Form.Item name='file_list' label='File List'>
-				<Upload.Dragger
-					name='file'
-					multiple={true}
-					fileList={fileList}
-					showUploadList={true}
-					onRemove={(file) => onFileRemoved(file)}
-					beforeUpload={(file) => onFileAdded(file)}
-				>
-					<p className='ant-upload-drag-icon'>
-						<InboxOutlined />
-					</p>
-					<p className='ant-upload-text'>
-						Click or drag file to this area to upload
-					</p>
-					<p className='ant-upload-hint'>
-						Support for a single or bulk upload. Strictly prohibit from
-						uploading company data or other band files
-					</p>
-				</Upload.Dragger>
-			</Form.Item>
+			{brief_design_direction_visible && (
+				<Item name='brief_design_direction' label='Design Direction'>
+					<TextArea rows={4} />
+				</Item>
+			)}
+			{brief_project_delivery_visible && (
+				<Item name='brief_project_delivery' label='Project Delivery Specifics'>
+					<TextArea rows={4} />
+				</Item>
+			)}
+			<SubmitButton />
 		</StyledForm>
 	);
 }
 
 const StyledForm = styled(Form)`
-	.form-item-wrp {
+	.ant-form-item {
 		display: flex;
 		flex-direction: column;
-		margin: 10px 0;
+		align-items: start;
+		margin: 20px 0;
+		flex: 1;
 
-		.ant-form-item {
-			margin: 0 10px 0 0;
-			flex: 1;
-		}
-	}
-`;
+		.ant-form-item-label {
+			label {
+				font-size: 18px;
+				font-weight: 600;
 
-const StyledFileList = styled.div`
-	ul {
-		li {
-			.file-wrp {
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-
-				&:hover {
-					background: #efefef;
-				}
-
-				p {
-					margin: 10px 0;
-				}
-
-				button {
-					cursor: pointer;
-					background: inherit;
-					border: none;
+				::after {
+					display: none;
 				}
 			}
+		}
+
+		.ant-form-item-control {
+			width: 100%;
 		}
 	}
 `;

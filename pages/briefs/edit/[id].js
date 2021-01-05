@@ -24,7 +24,7 @@ export default function EditBrief({ brief, preview }) {
 		return <EditBriefClient brief={brief} />;
 	}
 
-	return <p>Forbidden...</p>;
+	return <p>Something went wrong...</p>;
 }
 
 export async function getStaticProps({ params, preview = false }) {
