@@ -1,8 +1,8 @@
 module.exports = {
 	env: {
-		PUBLIC_API_URL: 'http://api.impressportal.com.au',
+		PUBLIC_API_URL: 'https://api.impressportal.com.au',
 	},
 	images: {
-		domains: ['http://api.impressportal.com.au'],
+		domains: ['https://api.impressportal.com.au'],
 	},
 };
