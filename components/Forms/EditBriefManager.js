@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Alert, Form, Input, message } from 'antd';
 
+import RichTextItem from '../RichTextItem';
 import AssetUpload from '../Assets/AssetUpload';
 import JobCodeSelect from '../Select/JobCodeSelect';
 import JobTypeSelect from '../Select/JobTypeSelect';
@@ -14,14 +15,25 @@ import DatePickerItem from './FormItems/DatePickerItem';
 import { updateBrief } from '../../lib/briefs';
 
 const { Item } = Form;
-const { TextArea } = Input;
 
 export default function EditBriefManager({ brief }) {
 	const [jobId, setJobId] = useState(undefined);
 	const [jobType, setJobType] = useState(undefined);
+	const [projectCircumstances, setProjectCircumstances] = useState(undefined);
+	const [desiredOutcomes, setDesiredOutcomes] = useState(undefined);
+	const [designDirection, setDesignDirection] = useState(undefined);
+	const [projectDelivery, setProjectDelivery] = useState(undefined);
 
 	const onFormFinish = async (values) => {
-		values = { ...values, job: jobId, brief_type: jobType };
+		values = {
+			...values,
+			job: jobId,
+			brief_type: jobType,
+			brief_project_circumstances: projectCircumstances,
+			brief_desired_outcomes: desiredOutcomes,
+			brief_design_direction: designDirection,
+			brief_project_delivery: projectDelivery,
+		};
 
 		console.log('values :>> ', values);
 
@@ -36,12 +48,14 @@ export default function EditBriefManager({ brief }) {
 		brief_title,
 		brief_type,
 		budget,
-		brand_assets_style_guide_on_file,
-		key_milestones,
 		brief_project_circumstances,
 		brief_project_circumstances_visible,
 		brief_desired_outcomes,
 		brief_desired_outcomes_visible,
+		brief_design_direction,
+		brief_design_direction_visible,
+		brief_project_delivery,
+		brief_project_delivery_visible,
 		brief_assets_style_guide_on_file,
 		brief_assets_final_content_provided,
 		brief_assets_follow_existing_style,
@@ -58,11 +72,6 @@ export default function EditBriefManager({ brief }) {
 					brief_title,
 					job_code: brief.job?.id,
 					brief_type,
-					brief_project_circumstances,
-					brief_project_circumstances_visible,
-					brief_desired_outcomes,
-					brief_desired_outcomes_visible,
-					brand_assets_style_guide_on_file,
 					brief_assets_style_guide_on_file,
 					brief_assets_final_content_provided,
 					brief_assets_follow_existing_style,
@@ -102,24 +111,46 @@ export default function EditBriefManager({ brief }) {
 						closable
 					/>
 				)}
+				<Audiences />
 				<VisibleFormItem
 					name='brief_project_circumstances'
 					label='Project Circumstances'
+					defaultChecked={brief_project_circumstances_visible}
 				>
-					<TextArea rows={4} />
+					<RichTextItem
+						passChildData={setProjectCircumstances}
+						defaultValue={brief_project_circumstances}
+					/>
 				</VisibleFormItem>
-				<Audiences />
-				<VisibleFormItem name='brief_desired_outcomes' label='Desired Outcomes'>
-					<TextArea rows={4} />
+				<VisibleFormItem
+					name='brief_desired_outcomes'
+					label='Desired Outcomes'
+					defaultChecked={brief_desired_outcomes_visible}
+				>
+					<RichTextItem
+						passChildData={setDesiredOutcomes}
+						defaultValue={brief_desired_outcomes}
+					/>
 				</VisibleFormItem>
-				<VisibleFormItem name='brief_design_direction' label='Design Direction'>
-					<TextArea rows={4} />
+				<VisibleFormItem
+					name='brief_design_direction'
+					label='Design Direction'
+					defaultChecked={brief_design_direction_visible}
+				>
+					<RichTextItem
+						passChildData={setDesignDirection}
+						defaultValue={brief_design_direction}
+					/>
 				</VisibleFormItem>
 				<VisibleFormItem
 					name='brief_project_delivery'
 					label='Project Delivery Specifics'
+					defaultChecked={brief_project_delivery_visible}
 				>
-					<TextArea rows={4} />
+					<RichTextItem
+						passChildData={setProjectDelivery}
+						defaultValue={brief_project_delivery}
+					/>
 				</VisibleFormItem>
 				<KeyMilestones />
 				<Item name='budget' label='Budget'>

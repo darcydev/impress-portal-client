@@ -7,6 +7,7 @@ import AuthContextProvider from '../context/AuthContext';
 import { GlobalStyles } from '../styles';
 
 import 'antd/dist/antd.css';
+import 'react-quill/dist/quill.snow.css';
 
 const queryClient = new QueryClient();
 

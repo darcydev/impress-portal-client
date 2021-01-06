@@ -3,7 +3,12 @@ import { Switch, Form } from 'antd';
 
 const { Item } = Form;
 
-export default function VisibleFormItem({ name, label, children }) {
+export default function VisibleFormItem({
+	name,
+	label,
+	children,
+	defaultChecked,
+}) {
 	return (
 		<StyledContainer>
 			<div className='input-wrp'>
@@ -13,7 +18,11 @@ export default function VisibleFormItem({ name, label, children }) {
 			</div>
 			<div className='switch-wrp'>
 				<Item name={`${name}_visible`}>
-					<Switch checkedChildren='Visible' unCheckedChildren='Hidden' />
+					<Switch
+						checkedChildren='Visible'
+						unCheckedChildren='Hidden'
+						defaultChecked={defaultChecked}
+					/>
 				</Item>
 			</div>
 		</StyledContainer>
