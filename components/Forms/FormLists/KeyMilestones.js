@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styled from 'styled-components';
 import { DatePicker, Form, Input, Button, Space, Statistic } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -43,7 +44,6 @@ export default function KeyMilestones() {
 								>
 									<DatePicker
 										placeholder='Due date'
-										allowClear={false}
 										format={['DD/MM/YYYY']}
 										onChange={(e) => handleDateChange(field.fieldKey, e)}
 									/>

@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import styled from 'styled-components';
 import { PageHeader, Popconfirm, Button, Row, Statistic } from 'antd';
 
 export default function BriefHeader({ brief }) {
@@ -31,15 +30,6 @@ export default function BriefHeader({ brief }) {
 				<Statistic title='Status' value={brief.brief_status} />
 				<Statistic title='Type' value={brief.brief_type} />
 				<Statistic title='Type' value={brief.brief_type} />
-				<Statistic
-					title='Price'
-					prefix='$'
-					value={568.08}
-					style={{
-						margin: '0 32px',
-					}}
-				/>
-				<Statistic title='Balance' prefix='$' value={3345.08} />
 			</Row>
 			<Row>
 				<Statistic

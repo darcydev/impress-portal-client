@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import {
-	Alert,
-	Checkbox,
-	DatePicker,
-	Form,
-	Input,
-	message,
-	Switch,
-} from 'antd';
+import { Alert, Form, Input, message } from 'antd';
 
 import AssetUpload from '../Assets/AssetUpload';
 import JobCodeSelect from '../Select/JobCodeSelect';
@@ -17,8 +9,9 @@ import Audiences from './FormLists/Audiences';
 import KeyMilestones from './FormLists/KeyMilestones';
 import VisibleFormItem from './FormItems/VisibleFormItem';
 import CheckBoxItem from './FormItems/CheckBoxItem';
-import { updateBrief } from '../../lib/briefs';
 import SubmitButton from './FormItems/SubmitButton';
+import DatePickerItem from './FormItems/DatePickerItem';
+import { updateBrief } from '../../lib/briefs';
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -28,31 +21,30 @@ export default function EditBriefManager({ brief }) {
 	const [jobType, setJobType] = useState(undefined);
 
 	const onFormFinish = async (values) => {
-		values = { ...values, job_code: jobId, brief_type: jobType };
+		values = { ...values, job: jobId, brief_type: jobType };
 
 		console.log('values :>> ', values);
 
 		const updatedBrief = await updateBrief(brief.id, values);
 
-		if (updatedBrief) {
-			message.success('Success!');
-		} else {
-			message.fail('Oops! Something went wrong');
-		}
+		updatedBrief
+			? message.success('Success!')
+			: message.fail('Oops! Something went wrong');
 	};
 
 	const {
-		brand_assets_style_guide_on_file,
-		brief_audiences,
 		brief_title,
 		brief_type,
 		budget,
-		job,
+		brand_assets_style_guide_on_file,
 		key_milestones,
 		brief_project_circumstances,
 		brief_project_circumstances_visible,
 		brief_desired_outcomes,
 		brief_desired_outcomes_visible,
+		brief_assets_style_guide_on_file,
+		brief_assets_final_content_provided,
+		brief_assets_follow_existing_style,
 	} = brief;
 
 	console.log('brief :>> ', brief);
@@ -71,6 +63,9 @@ export default function EditBriefManager({ brief }) {
 					brief_desired_outcomes,
 					brief_desired_outcomes_visible,
 					brand_assets_style_guide_on_file,
+					brief_assets_style_guide_on_file,
+					brief_assets_final_content_provided,
+					brief_assets_follow_existing_style,
 					key_milestones: [
 						{ description: 'Content to be provided' },
 						{ description: 'Submitted to Client' },
@@ -79,9 +74,7 @@ export default function EditBriefManager({ brief }) {
 					budget,
 				}}
 			>
-				<Item name='date_approved' label='Date Approved'>
-					<DatePicker />
-				</Item>
+				<DatePickerItem name='date_approved' label='Date Approved' />
 				<Item name='brief_title' label='Brief Title'>
 					<Input />
 				</Item>
@@ -100,7 +93,7 @@ export default function EditBriefManager({ brief }) {
 				<Item name='job_code' label='Job Code'>
 					<JobCodeSelect passChildData={setJobId} />
 				</Item>
-				{jobId === 10 && (
+				{jobId && (
 					<Alert
 						message='Lorem ipsum'
 						description='Ea consequat veniam culpa enim.'
@@ -129,6 +122,9 @@ export default function EditBriefManager({ brief }) {
 					<TextArea rows={4} />
 				</VisibleFormItem>
 				<KeyMilestones />
+				<Item name='budget' label='Budget'>
+					<Input />
+				</Item>
 				<h3>Client Assets</h3>
 				<CheckBoxItem
 					name='brief_assets_style_guide_on_file'
@@ -142,9 +138,6 @@ export default function EditBriefManager({ brief }) {
 					name='brief_assets_final_content_provided'
 					label='Will the final content be provided?'
 				/>
-				<Item name='budget' label='Budget'>
-					<Input />
-				</Item>
 				<SubmitButton buttonText='Update Brief' />
 			</StyledForm>
 			<AssetUpload jobCodeDefined={true} jobCode={jobId} briefId={brief.id} />
