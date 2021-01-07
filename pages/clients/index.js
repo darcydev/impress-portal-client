@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { useQuery } from 'react-query';
 
+import ClientsTable from '../../components/Tables/ClientsTable';
 import { readUserRole } from '../../lib/auth';
 import { readAllClients } from '../../lib/clients';
 
@@ -15,22 +16,11 @@ export default function ClientsPage({ allClients, preview }) {
 		return <div>Forbidden!</div>;
 	}
 
+	console.log('allClients :>> ', allClients);
+
 	return (
 		<div>
-			<h2>list of all clients</h2>
-			{allClients &&
-				allClients.map((client) => {
-					const { id, client_title, client_code } = client;
-
-					return (
-						<div key={id}>
-							<h4>Client title: {client_title}</h4>
-							<h5>Client code: {client_code}</h5>
-							<Link href={`/clients/${id}`}>view</Link>
-							<Link href={`/clients/edit/${id}`}>edit</Link>
-						</div>
-					);
-				})}
+			<ClientsTable data={allClients} />
 		</div>
 	);
 }
