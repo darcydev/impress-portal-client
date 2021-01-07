@@ -61,7 +61,7 @@ export default function EditClient({ client, preview }) {
 				label='Client description'
 				textarea={true}
 			/>
-			<SubmitButton buttonText='Edit Client' />
+			<SubmitButton buttonText='Update Client' />
 		</StyledForm>
 	);
 }

@@ -23,7 +23,7 @@ export default function SelectAssetTags({
 			<Select
 				showSearch
 				allowClear
-				placeholder='Select Job Type'
+				placeholder='Select Asset Tags'
 				mode={mode}
 				options={options}
 			/>

@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import { useQuery } from 'react-query';
-import styled from 'styled-components';
 import { Form, message } from 'antd';
 
 import SubmitButton from '../../../components/Forms/FormItems/SubmitButton';
@@ -10,6 +10,8 @@ import SelectVisibilityRestrictionItem from '../../../components/Forms/FormItems
 import InputItem from '../../../components/Forms/FormItems/InputItem';
 
 export default function EditJob({ job, preview }) {
+	const [formValues, setFormValues] = useState({});
+	const [form] = Form.useForm();
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status === 'error') {
@@ -25,8 +27,6 @@ export default function EditJob({ job, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
-		console.log('values :>> ', values);
-
 		const updatedJob = await updateJob(job.id, values);
 
 		console.log('updatedJob :>> ', updatedJob);
@@ -36,30 +36,33 @@ export default function EditJob({ job, preview }) {
 			: message.fail('Error: failed to update DB');
 	};
 
-	const { job_code, client } = job;
-
-	console.log('job :>> ', job);
+	const { job_code, client, visibility_restriction } = job;
 
 	return (
-		<StyledForm
-			name='edit_job_form'
-			onFinish={onFormFinish}
-			scrollToFirstError
-			initialValues={{
-				job_code,
-				client: client?.id,
-				visibility_restriction: job.visibility_restriction,
-			}}
-		>
-			<InputItem name='job_code' label='Job code' required={true} />
-			<SelectClientCodeItem required={true} />
-			<SelectVisibilityRestrictionItem required={true} />
-			<SubmitButton buttonText='Update Client' />
-		</StyledForm>
+		<>
+			<Form
+				form={form}
+				name='edit_job_form'
+				onFinish={onFormFinish}
+				onFieldsChange={() => setFormValues(form.getFieldsValue())}
+				initialValues={{
+					job_code,
+					client: client?.id,
+					visibility_restriction,
+				}}
+			>
+				<InputItem name='job_code' label='Job code' required={true} />
+				<SelectClientCodeItem required={true} />
+				<SelectVisibilityRestrictionItem
+					name='visibility_restriction'
+					label='Visibility Restriction'
+					required={true}
+				/>
+				<SubmitButton buttonText='Update Job' />
+			</Form>
+		</>
 	);
 }
-
-const StyledForm = styled(Form)``;
 
 export async function getStaticProps({ params, preview = false }) {
 	const job = await readJobById(params.id, preview);

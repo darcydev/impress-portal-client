@@ -16,6 +16,7 @@ import SelectJobTypeItem from './FormItems/SelectJobTypeItem';
 import Alert from '../Alert';
 
 import { updateBrief } from '../../lib/briefs';
+import SelectBriefStatusItem from './FormItems/SelectBriefStatusItem';
 
 export default function EditBriefManager({ brief }) {
 	const [formValues, setFormValues] = useState({});
@@ -52,6 +53,7 @@ export default function EditBriefManager({ brief }) {
 		job,
 		brief_title,
 		brief_type,
+		brief_status,
 		budget,
 		brief_project_circumstances,
 		brief_project_circumstances_visible,
@@ -90,6 +92,7 @@ export default function EditBriefManager({ brief }) {
 						{ description: 'Live/Published' },
 					],
 					budget,
+					brief_status,
 				}}
 			>
 				<DatePickerItem name='date_approved' label='Date Approved' />
@@ -154,6 +157,11 @@ export default function EditBriefManager({ brief }) {
 				<CheckBoxItem
 					name='brief_assets_final_content_provided'
 					label='Will the final content be provided?'
+				/>
+				<SelectBriefStatusItem
+					name='brief_status'
+					label='Brief Status'
+					required={true}
 				/>
 				<SubmitButton buttonText='Update Brief' />
 			</StyledForm>
