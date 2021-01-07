@@ -34,7 +34,7 @@ export default function SelectJobCodeItem({
 			<Select
 				showSearch
 				allowClear
-				placeholder='Select Client Code'
+				placeholder='Select Job Code'
 				options={jobCodeOptions}
 			/>
 		</ItemWrapper>

@@ -157,11 +157,7 @@ export default function EditBriefManager({ brief }) {
 				/>
 				<SubmitButton buttonText='Update Brief' />
 			</StyledForm>
-			<AssetUpload
-				jobCodeDefined={true}
-				jobCode={formValues.job_code}
-				briefId={brief.id}
-			/>
+			<AssetUpload briefId={brief.id} jobId={formValues.job_code} />
 		</>
 	);
 }

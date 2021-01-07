@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Form, Select, Button, Upload, Input, message } from 'antd';
+import { Form, Upload, message } from 'antd';
 import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
 
 import { createMedia } from '../../lib/media';
 import { createAsset, updateAsset } from '../../lib/assets';
 import { readJobByJobCode } from '../../lib/jobs';
-import JobCodeSelect from '../Select/JobCodeSelect';
+import SubmitButton from '../Forms/FormItems/SubmitButton';
+import InputItem from '../Forms/FormItems/InputItem';
+import SelectVisibilityRestrictionItem from '../Forms/FormItems/SelectVisibilityRestrictionItem';
+import SelectAssetTags from '../Forms/FormItems/SelectAssetTags';
+import SelectJobCodeItem from '../Forms/FormItems/SelectJobCodeItem';
 
-const { Option } = Select;
 const { Item } = Form;
 
-export default function AssetUpload({
-	jobCodeDefined,
-	jobId,
-	briefId = undefined,
-}) {
+export default function AssetUpload({ jobId = null, briefId = null }) {
 	const [fileList, setFileList] = useState([]);
+	const [form] = Form.useForm();
 
 	let newFileList = [...fileList];
 
@@ -26,21 +26,16 @@ export default function AssetUpload({
 		setFileList(newFileList);
 	};
 
-	// TODO can this be refactored?
-	const onFileRemoved = (file) => {
-		const index = fileList.indexOf(file);
-		const newFileList = fileList.slice();
-		newFileList.splice(index, 1);
+	const onFileRemoved = (removedFile) => {
+		const newFileList = fileList.filter((file) => file.uid !== removedFile.uid);
 		setFileList(newFileList);
 	};
 
 	const onFormFinish = async (values) => {
 		let createdAssetBody = {};
 
-		if (jobCodeDefined && jobCode) {
-			const { id } = await readJobByJobCode(jobCode);
-
-			createdAssetBody = { ...createdAssetBody, job: id };
+		if (jobId) {
+			createdAssetBody = { ...createdAssetBody, job: jobId };
 		} else if (values.job_code) {
 			const { id } = await readJobByJobCode(values.job_code);
 
@@ -78,41 +73,20 @@ export default function AssetUpload({
 
 			const updatedAsset = await updateAsset(createdAsset.id, body);
 
-			if (updatedAsset) {
-				message.success(`${updatedAsset.file.name} uploaded`);
-			} else {
-				message.fail(`${updatedAsset.file.name} failed`);
-			}
+			console.log('updatedAsset :>> ', updatedAsset);
+
+			updatedAsset
+				? message.success(`${updatedAsset.file.name} uploaded`)
+				: message.fail(`${updatedAsset.file.name} failed to upload`);
 		});
 	};
 
-	// TODO fetch from API
-	const options = [];
-	for (let i = 0; i < 30; i++) {
-		const value = `${i.toString(36)}${i}`;
-		options.push({
-			value,
-			disabled: i === 10,
-		});
-	}
-
 	return (
-		<StyledForm name='asset_upload_form' onFinish={onFormFinish}>
+		<StyledForm form={form} name='asset_upload_form' onFinish={onFormFinish}>
 			<h2>Upload Assets</h2>
-			{!jobCodeDefined && (
-				<Item name='job_code' label='Job code'>
-					<JobCodeSelect />
-				</Item>
-			)}
-			<Item name='tags' label='Tags'>
-				<Select
-					mode='multiple'
-					allowClear
-					placeholder='Select tags'
-					options={options}
-				/>
-			</Item>
-			<Form.Item name='file_list' label='File List'>
+			{!jobId && <SelectJobCodeItem />}
+			<SelectAssetTags name='tags' label='Tags' />
+			<Item name='file_list' label='File List'>
 				<Upload.Dragger
 					name='file'
 					multiple={true}
@@ -128,70 +102,50 @@ export default function AssetUpload({
 						Click or drag file to this area to upload
 					</p>
 				</Upload.Dragger>
-			</Form.Item>
+			</Item>
 			<StyledFileList>
 				<ul>
 					{fileList.map((file) => {
-						const { uid, name, size, type } = file;
+						const { uid, name } = file;
 
 						return (
 							<li key={uid}>
 								<div className='file-wrp'>
 									<h3>{name}</h3>
-									<button onClick={(file) => onFileRemoved(file)}>
+									<button
+										onClick={(e) => {
+											e.preventDefault();
+											onFileRemoved(file);
+										}}
+									>
 										<ImBin2 />
 									</button>
 								</div>
-								<div className='form-item-wrp'>
-									<Form.Item name={`${uid}Tags`}>
-										<Select
-											mode='multiple'
-											placeholder='Select specific tags for this asset'
-											options={options}
-										/>
-									</Form.Item>
-								</div>
-								<div className='form-item-wrp'>
-									<Form.Item name={`${uid}ServerLocation`}>
-										<Input placeholder='Server location' />
-									</Form.Item>
-								</div>
-								<div className='form-item-wrp'>
-									<Form.Item name={`${uid}AssetDescription`}>
-										<Input placeholder='Asset Description' />
-									</Form.Item>
-								</div>
-								<div className='form-item-wrp'>
-									<Form.Item name={`${uid}ExternalLocation`}>
-										<Input placeholder='External location (eg YouTube link)' />
-									</Form.Item>
-								</div>
-								<div className='form-item-wrp'>
-									<Form.Item name={`${uid}VisibilityRestriction`}>
-										<Select
-											allowClear
-											placeholder='Select visibility restriction'
-										>
-											<Option value='unrestricted'>Unrestricted</Option>
-											<Option value='restricted_to_client'>
-												Restricted to client
-											</Option>
-											<Option value='restricted_within_client'>
-												Restricted within client
-											</Option>
-										</Select>
-									</Form.Item>
+								<div className='form-items-wrp'>
+									<SelectAssetTags name={`${uid}Tags`} />
+									<InputItem
+										name={`${uid}ServerLocation`}
+										placeholder='Server location'
+									/>
+									<InputItem
+										name={`${uid}AssetDescription`}
+										placeholder='Asset Description'
+									/>
+									<InputItem
+										name={`${uid}ExternalLocation`}
+										placeholder='External location (eg YouTube link)'
+									/>
+									<SelectVisibilityRestrictionItem
+										name={`${uid}VisibilityRestriction`}
+										placeholder='Select visibility restriction'
+									/>
 								</div>
 							</li>
 						);
 					})}
 				</ul>
 			</StyledFileList>
-			<Form.Item>
-				<Button type='primary' htmlType='submit'>
-					Upload Assets
-				</Button>
-			</Form.Item>
+			<SubmitButton buttonText='Upload Assets' />
 		</StyledForm>
 	);
 }
