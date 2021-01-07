@@ -10,10 +10,20 @@ import NewClientButton from '../components/Buttons/NewClientButton';
 export default function Home() {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
+	const { status, data } = userRoleQuery;
+
+	if (status === 'error') {
+		return <p>error...</p>;
+	}
+
+	if (status === 'loading') {
+		return <p>loading...</p>;
+	}
+
 	return (
 		<div>
 			<h1>Home page</h1>
-			{userRoleQuery.data === 'Manager' && (
+			{data === 'Manager' && (
 				<>
 					<Button type='primary'>
 						<Link href='/assets/upload'>Upload Assets</Link>

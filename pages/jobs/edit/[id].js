@@ -1,9 +1,13 @@
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { Form, Input, Button, message } from 'antd';
+import { Form, message } from 'antd';
 
+import SubmitButton from '../../../components/Forms/FormItems/SubmitButton';
 import { readUserRole } from '../../../lib/auth';
 import { readAllJobs, readJobById, updateJob } from '../../../lib/jobs';
+import SelectClientCodeItem from '../../../components/Forms/FormItems/SelectClientCodeItem';
+import SelectVisibilityRestrictionItem from '../../../components/Forms/FormItems/SelectVisibilityRestrictionItem';
+import InputItem from '../../../components/Forms/FormItems/InputItem';
 
 export default function EditJob({ job, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
@@ -21,53 +25,41 @@ export default function EditJob({ job, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
+		console.log('values :>> ', values);
+
 		const updatedJob = await updateJob(job.id, values);
 
-		if (updatedJob) {
-			message.success('Updated');
-		} else {
-			message.fail('Updated failed');
-		}
+		console.log('updatedJob :>> ', updatedJob);
+
+		updatedJob
+			? message.success('Success')
+			: message.fail('Error: failed to update DB');
 	};
 
-	const { job_code } = job;
+	const { job_code, client } = job;
+
+	console.log('job :>> ', job);
 
 	return (
-		<div>
-			<h1>Edit single job page</h1>
-			<StyledForm
-				name='edit_job_form'
-				onFinish={onFormFinish}
-				scrollToFirstError
-				initialValues={{
-					['job_code']: job_code,
-				}}
-			>
-				<Form.Item name='job_code' label='Job code'>
-					<Input />
-				</Form.Item>
-				<Form.Item>
-					<Button type='primary' htmlType='submit'>
-						Edit
-					</Button>
-				</Form.Item>
-			</StyledForm>
-		</div>
+		<StyledForm
+			name='edit_job_form'
+			onFinish={onFormFinish}
+			scrollToFirstError
+			initialValues={{
+				job_code,
+				client: client?.id,
+				visibility_restriction: job.visibility_restriction,
+			}}
+		>
+			<InputItem name='job_code' label='Job code' required={true} />
+			<SelectClientCodeItem required={true} />
+			<SelectVisibilityRestrictionItem required={true} />
+			<SubmitButton buttonText='Update Client' />
+		</StyledForm>
 	);
 }
 
-const StyledForm = styled(Form)`
-	.form-item-wrp {
-		display: flex;
-		align-items: center;
-		margin: 10px 0;
-
-		.ant-form-item {
-			margin: 0 10px 0 0;
-			flex: 1;
-		}
-	}
-`;
+const StyledForm = styled(Form)``;
 
 export async function getStaticProps({ params, preview = false }) {
 	const job = await readJobById(params.id, preview);
