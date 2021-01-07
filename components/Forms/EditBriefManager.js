@@ -1,24 +1,29 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Alert, Form, Input, message } from 'antd';
+import { Form, message } from 'antd';
 
-import RichTextItem from '../RichTextItem';
+import RichTextWrapper from '../RichTextWrapper';
 import AssetUpload from '../Assets/AssetUpload';
-import JobCodeSelect from '../Select/JobCodeSelect';
-import JobTypeSelect from '../Select/JobTypeSelect';
-import Audiences from './FormLists/Audiences';
-import KeyMilestones from './FormLists/KeyMilestones';
+import AudiencesList from './FormLists/AudiencesList';
+import KeyMilestonesList from './FormLists/KeyMilestonesList';
 import VisibleFormItem from './FormItems/VisibleFormItem';
 import CheckBoxItem from './FormItems/CheckBoxItem';
 import SubmitButton from './FormItems/SubmitButton';
 import DatePickerItem from './FormItems/DatePickerItem';
+import InputItem from './FormItems/InputItem';
+import SelectJobCodeItem from './FormItems/SelectJobCodeItem';
+import SelectJobTypeItem from './FormItems/SelectJobTypeItem';
+import Alert from '../Alert';
+
 import { updateBrief } from '../../lib/briefs';
 
-const { Item } = Form;
-
 export default function EditBriefManager({ brief }) {
-	const [jobId, setJobId] = useState(undefined);
-	const [jobType, setJobType] = useState(undefined);
+	const [formValues, setFormValues] = useState({});
+	const [form] = Form.useForm();
+
+	// these are needed as seperate state because they contain
+	// RichText values, which aren't rendered on the server
+	// see 'RichTextWrapper' component
 	const [projectCircumstances, setProjectCircumstances] = useState(undefined);
 	const [desiredOutcomes, setDesiredOutcomes] = useState(undefined);
 	const [designDirection, setDesignDirection] = useState(undefined);
@@ -27,8 +32,7 @@ export default function EditBriefManager({ brief }) {
 	const onFormFinish = async (values) => {
 		values = {
 			...values,
-			job: jobId,
-			brief_type: jobType,
+			job: values.job_code,
 			brief_project_circumstances: projectCircumstances,
 			brief_desired_outcomes: desiredOutcomes,
 			brief_design_direction: designDirection,
@@ -45,6 +49,7 @@ export default function EditBriefManager({ brief }) {
 	};
 
 	const {
+		job,
 		brief_title,
 		brief_type,
 		budget,
@@ -63,14 +68,18 @@ export default function EditBriefManager({ brief }) {
 
 	console.log('brief :>> ', brief);
 
+	console.log('formValues :>> ', formValues);
+
 	return (
 		<>
 			<StyledForm
+				form={form}
 				name='edit_brief_manager_form'
 				onFinish={onFormFinish}
+				onFieldsChange={() => setFormValues(form.getFieldsValue())}
 				initialValues={{
 					brief_title,
-					job_code: brief.job?.id,
+					job_code: job?.id,
 					brief_type,
 					brief_assets_style_guide_on_file,
 					brief_assets_final_content_provided,
@@ -84,40 +93,19 @@ export default function EditBriefManager({ brief }) {
 				}}
 			>
 				<DatePickerItem name='date_approved' label='Date Approved' />
-				<Item name='brief_title' label='Brief Title'>
-					<Input />
-				</Item>
-				<Item name='brief_type' label='Brief Type'>
-					<JobTypeSelect passChildData={setJobType} />
-				</Item>
-				{jobType && (
-					<Alert
-						message='Lorem ipsum'
-						description='Ea consequat veniam culpa enim.'
-						type='info'
-						showIcon
-						closable
-					/>
-				)}
-				<Item name='job_code' label='Job Code'>
-					<JobCodeSelect passChildData={setJobId} />
-				</Item>
-				{jobId && (
-					<Alert
-						message='Lorem ipsum'
-						description='Ea consequat veniam culpa enim.'
-						type='info'
-						showIcon
-						closable
-					/>
-				)}
-				<Audiences />
+				{formValues.date_approved && <Alert />}
+				<InputItem name='brief_title' label='Brief Title' />
+				<SelectJobTypeItem name='brief_type' label='Brief Type' />
+				{formValues.brief_type && <Alert />}
+				<SelectJobCodeItem name='job_code' label='Job Code' />
+				{formValues.job_code && <Alert />}
+				<AudiencesList />
 				<VisibleFormItem
 					name='brief_project_circumstances'
 					label='Project Circumstances'
 					defaultChecked={brief_project_circumstances_visible}
 				>
-					<RichTextItem
+					<RichTextWrapper
 						passChildData={setProjectCircumstances}
 						defaultValue={brief_project_circumstances}
 					/>
@@ -127,7 +115,7 @@ export default function EditBriefManager({ brief }) {
 					label='Desired Outcomes'
 					defaultChecked={brief_desired_outcomes_visible}
 				>
-					<RichTextItem
+					<RichTextWrapper
 						passChildData={setDesiredOutcomes}
 						defaultValue={brief_desired_outcomes}
 					/>
@@ -137,7 +125,7 @@ export default function EditBriefManager({ brief }) {
 					label='Design Direction'
 					defaultChecked={brief_design_direction_visible}
 				>
-					<RichTextItem
+					<RichTextWrapper
 						passChildData={setDesignDirection}
 						defaultValue={brief_design_direction}
 					/>
@@ -147,15 +135,13 @@ export default function EditBriefManager({ brief }) {
 					label='Project Delivery Specifics'
 					defaultChecked={brief_project_delivery_visible}
 				>
-					<RichTextItem
+					<RichTextWrapper
 						passChildData={setProjectDelivery}
 						defaultValue={brief_project_delivery}
 					/>
 				</VisibleFormItem>
-				<KeyMilestones />
-				<Item name='budget' label='Budget'>
-					<Input />
-				</Item>
+				<KeyMilestonesList />
+				<InputItem name='budget' label='Budget' />
 				<h3>Client Assets</h3>
 				<CheckBoxItem
 					name='brief_assets_style_guide_on_file'
@@ -171,7 +157,11 @@ export default function EditBriefManager({ brief }) {
 				/>
 				<SubmitButton buttonText='Update Brief' />
 			</StyledForm>
-			<AssetUpload jobCodeDefined={true} jobCode={jobId} briefId={brief.id} />
+			<AssetUpload
+				jobCodeDefined={true}
+				jobCode={formValues.job_code}
+				briefId={brief.id}
+			/>
 		</>
 	);
 }

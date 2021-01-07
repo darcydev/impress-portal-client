@@ -1,11 +1,11 @@
-import { DatePicker, Form } from 'antd';
+import { DatePicker } from 'antd';
 
-const { Item } = Form;
+import ItemWrapper from './ItemWrapper';
 
 export default function DatePickerItem({ name, label }) {
 	return (
-		<Item name={name} label={label}>
+		<ItemWrapper name={name} label={label}>
 			<DatePicker format={'DD/MM/YYYY'} />
-		</Item>
+		</ItemWrapper>
 	);
 }

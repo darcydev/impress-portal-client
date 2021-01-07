@@ -9,7 +9,7 @@ const { TextArea } = Input;
 
 const requiredField = [{ required: true, message: 'Required' }];
 
-export default function KeyMilestones() {
+export default function KeyMilestonesList() {
 	const [workingDays, setWorkingDays] = useState([]);
 
 	const handleDateChange = (fieldKey, endDate) => {
