@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 import { isLoggedIn } from '../lib/auth';
 
-import ThemeToggler from './ThemeToggler';
 import LogoutButton from './Buttons/LogoutButton';
 
 export default function Header() {
@@ -33,17 +32,11 @@ export default function Header() {
 							<li>
 								<LogoutButton />
 							</li>
-							<li>
-								<ThemeToggler />
-							</li>
 						</ul>
 					) : (
 						<ul>
 							<li>
 								<Link href='/login'>Login</Link>
-							</li>
-							<li>
-								<ThemeToggler />
 							</li>
 						</ul>
 					)}
@@ -58,7 +51,7 @@ const StyledHeader = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	background: ${(props) => props.theme.colors.bg};
+	background: #efefef;
 `;
 
 const StyledNav = styled.nav`

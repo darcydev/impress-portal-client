@@ -1,7 +1,7 @@
 import { createGlobalStyle, css } from 'styled-components';
 
 export default createGlobalStyle`
-${({ theme }) => css`
+${() => css`
 	html {
 		height: 100%;
 
@@ -11,8 +11,8 @@ ${({ theme }) => css`
 			box-sizing: border-box;
 
 			#root {
-				background: ${theme.colors.bg};
-				color: ${theme.colors.txt};
+				background: #efefef;
+				color: #000;
 				display: flex;
 				flex-direction: column;
 				align-items: center;

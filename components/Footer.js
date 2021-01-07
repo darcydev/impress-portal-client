@@ -11,9 +11,5 @@ export default function Footer() {
 
 const StyledFooter = styled.footer`
 	padding: 50px 25px;
-	background: ${(props) => props.theme.colors.bg};
-
-	.logo-wrp {
-		color: ${(props) => props.theme.colors.txt};
-	}
+	background: #efefef;
 `;
