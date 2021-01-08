@@ -14,8 +14,9 @@ export default function NewJobButton() {
 
 		setTimeout(() => {
 			setLoading(false);
-			Router.push(`/jobs/edit/${id}`);
-		}, 2000);
+		}, 500);
+
+		Router.push(`/jobs/edit/${id}`);
 	};
 
 	return (

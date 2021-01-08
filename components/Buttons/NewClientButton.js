@@ -14,8 +14,9 @@ export default function NewClientButton() {
 
 		setTimeout(() => {
 			setLoading(false);
-			Router.push(`/clients/edit/${id}`);
-		}, 2000);
+		}, 500);
+
+		Router.push(`/clients/edit/${id}`);
 	};
 
 	return (
