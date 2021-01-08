@@ -97,7 +97,7 @@ export default function Orientation({ brief, passChildData }) {
 			<DatePickerItem name='date_approved' label='Date Approved' />
 			{formValues.date_approved && <Alert />}
 			<InputItem name='brief_title' label='Brief Title' />
-			<SelectJobTypeItem name='brief_type' label='Brief Type' />
+			<SelectJobTypeItem name='brief_type' label='Brief Type' required={true} />
 			{formValues.brief_type && <Alert />}
 			<SelectJobCodeItem name='job' label='Job Code' />
 			{formValues.job && <Alert />}
