@@ -8,10 +8,12 @@ import { readAllJobs, readJobById, updateJob } from '../../../lib/jobs';
 import SelectClientCodeItem from '../../../components/Forms/FormItems/SelectClientCodeItem';
 import SelectVisibilityRestrictionItem from '../../../components/Forms/FormItems/SelectVisibilityRestrictionItem';
 import InputItem from '../../../components/Forms/FormItems/InputItem';
+import AssetUploadForm from '../../../components/Forms/AssetUploadForm';
 
 export default function EditJob({ job, preview }) {
 	const [formValues, setFormValues] = useState({});
 	const [form] = Form.useForm();
+
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	if (userRoleQuery.status === 'error') {
@@ -27,6 +29,8 @@ export default function EditJob({ job, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
+		console.log('values :>> ', values);
+
 		const updatedJob = await updateJob(job.id, values);
 
 		console.log('updatedJob :>> ', updatedJob);
@@ -37,6 +41,8 @@ export default function EditJob({ job, preview }) {
 	};
 
 	const { job_code, client, visibility_restriction } = job;
+
+	console.log('formValues :>> ', formValues);
 
 	return (
 		<>
@@ -60,6 +66,7 @@ export default function EditJob({ job, preview }) {
 				/>
 				<SubmitButton buttonText='Update Job' />
 			</Form>
+			<AssetUploadForm jobId={job.id} />
 		</>
 	);
 }

@@ -1,5 +1,5 @@
-import AssetUpload from '../../components/Assets/AssetUpload';
+import AssetUploadForm from '../../components/Forms/AssetUploadForm';
 
 export default function AssetUploadPage() {
-	return <AssetUpload />;
+	return <AssetUploadForm />;
 }

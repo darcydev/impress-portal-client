@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styled from 'styled-components';
 import { DatePicker, Form, Input, Button, Space, Statistic } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -21,7 +22,7 @@ export default function KeyMilestonesList() {
 
 	return (
 		<>
-			<h2>Key Milestones</h2>
+			<StyledHeader>Key Milestones</StyledHeader>
 			<List name='key_milestones'>
 				{(fields, { add, remove }) => (
 					<>
@@ -82,3 +83,8 @@ export default function KeyMilestonesList() {
 		</>
 	);
 }
+
+const StyledHeader = styled.h3`
+	font-size: 16px;
+	font-weight: 500;
+`;

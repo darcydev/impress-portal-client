@@ -4,18 +4,22 @@ import { Form, Upload, message } from 'antd';
 import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
 
+import SubmitButton from './FormItems/SubmitButton';
+import InputItem from './FormItems/InputItem';
+import SelectVisibilityRestrictionItem from './FormItems/SelectVisibilityRestrictionItem';
+import SelectAssetTags from './FormItems/SelectAssetTags';
+import SelectJobCodeItem from './FormItems/SelectJobCodeItem';
 import { createMedia } from '../../lib/media';
 import { createAsset, updateAsset } from '../../lib/assets';
 import { readJobByJobCode } from '../../lib/jobs';
-import SubmitButton from '../Forms/FormItems/SubmitButton';
-import InputItem from '../Forms/FormItems/InputItem';
-import SelectVisibilityRestrictionItem from '../Forms/FormItems/SelectVisibilityRestrictionItem';
-import SelectAssetTags from '../Forms/FormItems/SelectAssetTags';
-import SelectJobCodeItem from '../Forms/FormItems/SelectJobCodeItem';
 
 const { Item } = Form;
 
-export default function AssetUpload({ jobId = null, briefId = null }) {
+export default function AssetUploadForm({
+	jobId = null,
+	briefId = null,
+	showJobId = false,
+}) {
 	const [fileList, setFileList] = useState([]);
 	const [form] = Form.useForm();
 
@@ -84,7 +88,7 @@ export default function AssetUpload({ jobId = null, briefId = null }) {
 	return (
 		<StyledForm form={form} name='asset_upload_form' onFinish={onFormFinish}>
 			<h2>Upload Assets</h2>
-			{!jobId && <SelectJobCodeItem />}
+			{showJobId && <SelectJobCodeItem />}
 			<SelectAssetTags name='tags' label='Tags' />
 			<Item name='file_list' label='File List'>
 				<Upload.Dragger

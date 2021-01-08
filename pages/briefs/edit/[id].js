@@ -1,26 +1,34 @@
+import Router from 'next/router';
 import { useQuery } from 'react-query';
 
+import EditBriefManager from '../../../components/Forms/Briefs/BriefManager';
+import EditBriefClient from '../../../components/Forms/Briefs/BriefClient';
 import { readUserRole } from '../../../lib/auth';
 import { readAllBriefs, readBriefById } from '../../../lib/briefs';
-import EditBriefManager from '../../../components/Forms/EditBriefManager';
-import EditBriefClient from '../../../components/Forms/EditBriefClient';
 
 export default function EditBrief({ brief, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
-	if (userRoleQuery.status === 'error') {
+	const { status, data } = userRoleQuery;
+
+	if (status === 'error') {
 		return <div>error...</div>;
 	}
 
-	if (userRoleQuery.status === 'loading') {
+	if (status === 'loading') {
 		return <div>loading...</div>;
 	}
 
-	if (userRoleQuery.data === 'Manager') {
+	if (!data) {
+		Router.push('/login');
+		return null;
+	}
+
+	if (data === 'Manager') {
 		return <EditBriefManager brief={brief} />;
 	}
 
-	if (userRoleQuery.data === 'Client') {
+	if (data === 'Client') {
 		return <EditBriefClient brief={brief} />;
 	}
 

@@ -1,4 +1,5 @@
 import { Form, Input, Button, Rate, Space } from 'antd';
+import styled from 'styled-components';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Item, List } = Form;
@@ -9,11 +10,11 @@ const requiredField = [{ required: true, message: 'Required' }];
 export default function Audiences() {
 	return (
 		<>
-			<h2>Audiences</h2>
+			<StyledHeader>Audiences</StyledHeader>
 			<List name='audiences'>
-				{(fields, { add, remove }) => (
+				{(fields, { add, remove }, { errors }) => (
 					<>
-						{fields.map((field) => (
+						{fields.map((field, index) => (
 							<Space key={field.key} align='center'>
 								<Item
 									{...field}
@@ -55,6 +56,7 @@ export default function Audiences() {
 							>
 								Add audience
 							</Button>
+							<Form.ErrorList errors={errors} />
 						</Item>
 					</>
 				)}
@@ -62,3 +64,8 @@ export default function Audiences() {
 		</>
 	);
 }
+
+const StyledHeader = styled.h3`
+	font-size: 16px;
+	font-weight: 500;
+`;
