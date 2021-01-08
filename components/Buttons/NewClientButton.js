@@ -10,12 +10,12 @@ export default function NewClientButton() {
 	const handleClick = async () => {
 		setLoading(true);
 
+		const { id } = await createClient();
+
 		setTimeout(() => {
 			setLoading(false);
+			Router.push(`/clients/edit/${id}`);
 		}, 2000);
-
-		const { id } = await createClient();
-		Router.push(`/clients/${id}`);
 	};
 
 	return (

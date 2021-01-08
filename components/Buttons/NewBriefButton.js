@@ -14,9 +14,8 @@ export default function NewBriefButton() {
 
 		setTimeout(() => {
 			setLoading(false);
+			Router.push(`/briefs/edit/${id}`);
 		}, 2000);
-
-		Router.push(`/briefs/edit/${id}`);
 	};
 
 	return (

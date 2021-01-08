@@ -10,12 +10,12 @@ export default function NewJobButton() {
 	const handleClick = async () => {
 		setLoading(true);
 
+		const { id } = await createJob();
+
 		setTimeout(() => {
 			setLoading(false);
+			Router.push(`/jobs/edit/${id}`);
 		}, 2000);
-
-		const { id } = await createJob();
-		Router.push(`/jobs/${id}`);
 	};
 
 	return (
