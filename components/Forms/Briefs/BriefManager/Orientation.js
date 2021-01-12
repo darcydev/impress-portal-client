@@ -14,7 +14,7 @@ import SelectJobTypeItem from '../../FormItems/SelectJobTypeItem';
 import SelectBriefStatusItem from '../../FormItems/SelectBriefStatusItem';
 import VisibleFormItem from '../../FormItems/VisibleFormItem';
 import Alert from '../../../Alert';
-
+import SwitchRestrictionItem from '../../FormItems/SwitchRestrictionItem';
 import { updateBrief } from '../../../../lib/briefs';
 
 export default function Orientation({ brief, passChildData }) {
@@ -68,6 +68,7 @@ export default function Orientation({ brief, passChildData }) {
 		brief_assets_style_guide_on_file,
 		brief_assets_final_content_provided,
 		brief_assets_follow_existing_style,
+		restricted,
 	} = brief;
 
 	console.log('formValues :>> ', formValues);
@@ -76,6 +77,7 @@ export default function Orientation({ brief, passChildData }) {
 		<StyledForm
 			form={form}
 			name='edit_brief_manager_form'
+			scrollToFirstError
 			onFinish={onFormFinish}
 			onFieldsChange={() => setFormValues(form.getFieldsValue())}
 			initialValues={{
@@ -92,6 +94,7 @@ export default function Orientation({ brief, passChildData }) {
 				],
 				budget,
 				brief_status,
+				restricted,
 			}}
 		>
 			<DatePickerItem name='date_approved' label='Date Approved' />
@@ -162,6 +165,7 @@ export default function Orientation({ brief, passChildData }) {
 				label='Brief Status'
 				required={true}
 			/>
+			<SwitchRestrictionItem />
 			<SubmitButton buttonText='Update Brief' />
 		</StyledForm>
 	);

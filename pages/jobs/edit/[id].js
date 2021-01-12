@@ -6,7 +6,8 @@ import SubmitButton from '../../../components/Forms/FormItems/SubmitButton';
 import { readUserRole } from '../../../lib/auth';
 import { readAllJobs, readJobById, updateJob } from '../../../lib/jobs';
 import SelectClientCodeItem from '../../../components/Forms/FormItems/SelectClientCodeItem';
-import SelectVisibilityRestrictionItem from '../../../components/Forms/FormItems/SelectVisibilityRestrictionItem';
+import SwitchRestrictionItem from '../../../components/Forms/FormItems/SwitchRestrictionItem';
+import SelectRestrictedClients from '../../../components/Forms/FormItems/SelectRestrictedClients';
 import InputItem from '../../../components/Forms/FormItems/InputItem';
 import AssetUploadForm from '../../../components/Forms/AssetUploadForm';
 
@@ -59,11 +60,7 @@ export default function EditJob({ job, preview }) {
 			>
 				<InputItem name='job_code' label='Job code' required={true} />
 				<SelectClientCodeItem required={true} />
-				<SelectVisibilityRestrictionItem
-					name='visibility_restriction'
-					label='Visibility Restriction'
-					required={true}
-				/>
+				<SwitchRestrictionItem />
 				<SubmitButton buttonText='Update Job' />
 			</Form>
 			<AssetUploadForm jobId={job.id} />
