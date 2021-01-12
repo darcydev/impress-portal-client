@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { DatePicker, Form, Input, Button, Space, Statistic } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
-import { calculateWorkingDaysFromToday } from '../../../utils/calculateWorkingDays';
+import { getWorkingDays } from '../../../utils/getWorkingDays';
 
 const { Item, List } = Form;
 const { TextArea } = Input;
@@ -15,9 +15,10 @@ export default function KeyMilestonesList() {
 
 	const handleDateChange = (fieldKey, endDate) => {
 		const today = new Date();
-		const workingDaysRemaining = calculateWorkingDaysFromToday(today, endDate);
 
-		setWorkingDays({ ...workingDays, [fieldKey]: workingDaysRemaining });
+		const workingDays = getWorkingDays(today, endDate);
+
+		setWorkingDays({ ...workingDays, [fieldKey]: workingDays });
 	};
 
 	return (
