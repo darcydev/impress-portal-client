@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 
 import Orientation from './Orientation';
+import Animation from './Animation';
 import AssetUploadForm from '../../AssetUploadForm';
 
 export default function BriefManager({ brief }) {
@@ -15,7 +16,7 @@ export default function BriefManager({ brief }) {
 			case 'Orientation':
 				return <Orientation brief={brief} passChildData={setFormType} />;
 			case 'Video/Animation':
-				return <p>animation form...</p>;
+				return <Animation brief={brief} />;
 			default:
 				return (
 					<div>

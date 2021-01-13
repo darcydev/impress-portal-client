@@ -97,6 +97,7 @@ export default function Orientation({ brief, passChildData }) {
 				restricted,
 			}}
 		>
+			<h1>Orientation</h1>
 			<DatePickerItem name='date_approved' label='Date Approved' />
 			{formValues.date_approved && <Alert />}
 			<InputItem name='brief_title' label='Brief Title' />
@@ -146,7 +147,7 @@ export default function Orientation({ brief, passChildData }) {
 				/>
 			</VisibleFormItem>
 			<KeyMilestonesList />
-			<InputItem name='budget' label='Budget' />
+			<InputItem name='budget' label='Budget' required={false} />
 			<h3>Client Assets</h3>
 			<CheckBoxItem
 				name='brief_assets_style_guide_on_file'
