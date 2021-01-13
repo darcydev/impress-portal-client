@@ -21,13 +21,7 @@ export default function BriefsPage({ allBriefs, preview }) {
 		return <p>Forbidden!</p>;
 	}
 
-	console.log('allBriefs :>> ', allBriefs);
-
-	return (
-		<div>
-			<BriefsTable data={allBriefs} />
-		</div>
-	);
+	return <BriefsTable data={allBriefs} />;
 }
 
 export async function getStaticProps({ preview = false }) {

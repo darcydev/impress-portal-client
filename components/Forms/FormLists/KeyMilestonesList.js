@@ -16,9 +16,9 @@ export default function KeyMilestonesList() {
 	const handleDateChange = (fieldKey, endDate) => {
 		const today = new Date();
 
-		const workingDays = getWorkingDays(today, endDate);
+		const workingDaysFromNewDate = getWorkingDays(today, endDate);
 
-		setWorkingDays({ ...workingDays, [fieldKey]: workingDays });
+		setWorkingDays({ ...workingDays, [fieldKey]: workingDaysFromNewDate });
 	};
 
 	return (
