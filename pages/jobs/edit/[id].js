@@ -7,8 +7,7 @@ import { readUserRole } from '../../../lib/auth';
 import { readAllJobs, readJobById, updateJob } from '../../../lib/jobs';
 import SelectClientCodeItem from '../../../components/Forms/FormItems/SelectClientCodeItem';
 import SwitchRestrictionItem from '../../../components/Forms/FormItems/SwitchRestrictionItem';
-import SelectRestrictedClients from '../../../components/Forms/FormItems/SelectRestrictedClients';
-import InputItem from '../../../components/Forms/FormItems/InputItem';
+import { InputItem } from '../../../components/Forms/FormItems/InputItem';
 import AssetUploadForm from '../../../components/Forms/AssetUploadForm';
 
 export default function EditJob({ job, preview }) {
@@ -43,8 +42,6 @@ export default function EditJob({ job, preview }) {
 
 	const { job_code, client, visibility_restriction } = job;
 
-	console.log('formValues :>> ', formValues);
-
 	return (
 		<>
 			<Form
@@ -58,7 +55,7 @@ export default function EditJob({ job, preview }) {
 					visibility_restriction,
 				}}
 			>
-				<InputItem name='job_code' label='Job code' required={true} />
+				<InputItem name='job_code' label='Job code' />
 				<SelectClientCodeItem required={true} />
 				<SwitchRestrictionItem />
 				<SubmitButton buttonText='Update Job' />

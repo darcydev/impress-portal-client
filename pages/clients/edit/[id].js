@@ -9,7 +9,7 @@ import {
 	readClientById,
 	updateClient,
 } from '../../../lib/clients';
-import InputItem from '../../../components/Forms/FormItems/InputItem';
+import { InputItem } from '../../../components/Forms/FormItems/InputItem';
 
 export default function EditClient({ client, preview }) {
 	const userRoleQuery = useQuery('userRole', readUserRole);
@@ -41,8 +41,6 @@ export default function EditClient({ client, preview }) {
 	};
 
 	const { client_code, client_description, client_title } = client;
-
-	console.log('client :>> ', client);
 
 	return (
 		<StyledForm

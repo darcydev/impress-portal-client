@@ -5,7 +5,7 @@ import { ImBin2 } from 'react-icons/im';
 import { InboxOutlined } from '@ant-design/icons';
 
 import SubmitButton from './FormItems/SubmitButton';
-import InputItem from './FormItems/InputItem';
+import { InputItem } from './FormItems/InputItem';
 import SelectVisibilityRestrictionItem from './FormItems/SelectVisibilityRestrictionItem';
 import SelectAssetTags from './FormItems/SelectAssetTags';
 import SelectJobCodeItem from './FormItems/SelectJobCodeItem';

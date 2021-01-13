@@ -1,39 +1,37 @@
-import { Form, Input, Button, message } from 'antd';
+import { Form, message } from 'antd';
 
+import { InputItem, PasswordItem } from './FormItems/InputItem';
+import SubmitButton from './FormItems/SubmitButton';
 import { loginUser } from '../../lib/auth';
 
 export const LoginForm = () => {
+	const [form] = Form.useForm();
+
 	const onSubmit = async (values) => {
 		const loggedInUser = await loginUser(values);
 
 		if (loggedInUser) {
 			message.success('Login successful');
 		} else {
-			message.fail('Login failed');
+			message.error('Login failed');
 		}
 	};
 
 	return (
-		<Form name='basic' initialValues={{ remember: true }} onFinish={onSubmit}>
-			<Form.Item
-				label='Email'
+		<Form form={form} name='login_form' onFinish={onSubmit}>
+			<InputItem
 				name='email'
-				rules={[{ required: true, message: 'Email required' }]}
-			>
-				<Input />
-			</Form.Item>
-			<Form.Item
-				label='Password'
+				label='Email'
+				placeholder='Email'
+				required={true}
+			/>
+			<PasswordItem
 				name='password'
-				rules={[{ required: true, message: 'Please input your password!' }]}
-			>
-				<Input.Password />
-			</Form.Item>
-			<Form.Item>
-				<Button type='primary' htmlType='submit'>
-					Login
-				</Button>
-			</Form.Item>
+				label='Password'
+				placeholder='Password'
+				required={true}
+			/>
+			<SubmitButton />
 		</Form>
 	);
 };

@@ -8,7 +8,7 @@ import KeyMilestonesList from '../../FormLists/KeyMilestonesList';
 import CheckBoxItem from '../../FormItems/CheckBoxItem';
 import SubmitButton from '../../FormItems/SubmitButton';
 import DatePickerItem from '../../FormItems/DatePickerItem';
-import InputItem from '../../FormItems/InputItem';
+import { InputItem } from '../../FormItems/InputItem';
 import SelectJobCodeItem from '../../FormItems/SelectJobCodeItem';
 import SelectJobTypeItem from '../../FormItems/SelectJobTypeItem';
 import SelectBriefStatusItem from '../../FormItems/SelectBriefStatusItem';
