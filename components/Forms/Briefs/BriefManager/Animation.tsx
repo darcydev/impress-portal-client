@@ -1,11 +1,15 @@
 import React, { FunctionComponent, useState } from 'react';
 import styled from 'styled-components';
+import { useQuery } from 'react-query';
 import { Form } from 'antd';
 
 import SelectItem from '../../FormItems/SelectItem';
 import SubmitButton from '../../FormItems/SubmitButton';
 import AssetsPublishedList from '../../FormLists/AssetsPublishedList';
 import RichTextWrapper from '../../../RichTextWrapper';
+import AssetsSearch from '../../../Assets/AssetsSearch';
+import AssetsContainer from '../../../Assets/AssetsContainer';
+import { readAllAssets } from '../../../../lib/assets';
 
 type ComponentProps = {
 	brief: object;
@@ -14,7 +18,14 @@ type ComponentProps = {
 const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 	const [formValues, setFormValues] = useState({});
 	const [additionalNotes, setAdditionalNotes] = useState(undefined);
+	const [searchFilters, setSearchFilters] = useState({
+		jobCodes: [],
+		tags: [],
+		description: '',
+	});
 	const [form] = Form.useForm();
+
+	const assetsQuery = useQuery('assetsQuery', readAllAssets);
 
 	const onFormFinish = async (values) => {
 		values = {
@@ -25,9 +36,8 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 		console.log('values :>> ', values);
 	};
 
-	console.log('brief :>> ', brief);
 	console.log('formValues :>> ', formValues);
-	console.log('additionalNotes :>> ', additionalNotes);
+	console.log('assetsQuery :>> ', assetsQuery);
 
 	return (
 		<StyledForm
@@ -103,10 +113,17 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 			/>
 			<AssetsPublishedList />
 			<h2>Visual Style</h2>
-			<p>
-				TODO: insert relevant examples from asset library. How will this based?
-				From simply 'tags'?
-			</p>
+			{assetsQuery.status === 'error' && <p>error...</p>}
+			{assetsQuery.status === 'loading' && <p>loading...</p>}
+			{assetsQuery.status === 'success' && (
+				<>
+					<AssetsSearch
+						assets={assetsQuery.data}
+						passChildData={setSearchFilters}
+					/>
+					<AssetsContainer activeFilters={searchFilters} />
+				</>
+			)}
 			<h2>Additional Notes</h2>
 			<RichTextWrapper passChildData={setAdditionalNotes} defaultValue={null} />
 			<SubmitButton />

@@ -74,6 +74,8 @@ export default function AssetsContainer({ activeFilters }) {
 			{filteredData.map((asset) => {
 				const { id, tags, used_by_client, file, job } = asset;
 
+				if (!file) return null;
+
 				return (
 					<AssetThumbnail
 						key={id}

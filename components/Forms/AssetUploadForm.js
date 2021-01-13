@@ -6,9 +6,9 @@ import { InboxOutlined } from '@ant-design/icons';
 
 import SubmitButton from './FormItems/SubmitButton';
 import { InputItem } from './FormItems/InputItem';
-import SelectVisibilityRestrictionItem from './FormItems/SelectVisibilityRestrictionItem';
 import SelectAssetTags from './FormItems/SelectAssetTags';
 import SelectJobCodeItem from './FormItems/SelectJobCodeItem';
+import SwitchRestrictionItem from './FormItems/SwitchRestrictionItem';
 import { createMedia } from '../../lib/media';
 import { createAsset, updateAsset } from '../../lib/assets';
 import { readJobByJobCode } from '../../lib/jobs';
@@ -64,15 +64,18 @@ export default function AssetUploadForm({
 			const assetDescription = values[`${uid}AssetDescription`];
 			const serverLocation = values[`${uid}ServerLocation`];
 			const externalLocation = values[`${uid}ExternalLocation`];
-			const visibilityRestriction = values[`${uid}VisibilityRestriction`];
+			// const visibilityRestriction = values[`${uid}VisibilityRestriction`];
+			const restricted = values[`${uid}Restricted`];
+			const users_permissions_users = values[`${uid}UsersPermissionsUsers`];
 
 			const body = JSON.stringify({
 				tags: assetTags,
 				asset_description: assetDescription,
 				server_location: serverLocation,
 				external_location: externalLocation,
-				visibility_restriction: visibilityRestriction,
 				uploaded_by_client: false,
+				restricted,
+				users_permissions_users,
 			});
 
 			const updatedAsset = await updateAsset(createdAsset.id, body);
@@ -139,9 +142,9 @@ export default function AssetUploadForm({
 										name={`${uid}ExternalLocation`}
 										placeholder='External location (eg YouTube link)'
 									/>
-									<SelectVisibilityRestrictionItem
-										name={`${uid}VisibilityRestriction`}
-										placeholder='Select visibility restriction'
+									<SwitchRestrictionItem
+										name={`${uid}Restricted`}
+										selectName={`${uid}UsersPermissionsUsers`}
 									/>
 								</div>
 							</li>

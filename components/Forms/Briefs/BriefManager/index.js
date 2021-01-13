@@ -8,9 +8,6 @@ import AssetUploadForm from '../../AssetUploadForm';
 export default function BriefManager({ brief }) {
 	const [formType, setFormType] = useState('Orientation');
 
-	console.log('formType :>> ', formType);
-	console.log('brief :>> ', brief);
-
 	const showRelevantForm = () => {
 		switch (formType) {
 			case 'Orientation':
