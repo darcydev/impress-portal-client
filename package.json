@@ -2,10 +2,13 @@
 	"name": "client",
 	"version": "0.1.0",
 	"private": true,
+	"author": "Darcy Price",
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start",
+		"test": "jest --watch",
+		"test:coverage": "jest --coverage"
 	},
 	"dependencies": {
 		"@ant-design/icons": "^4.3.0",
@@ -22,9 +25,17 @@
 		"styled-components": "^5.2.1"
 	},
 	"devDependencies": {
+		"@babel/preset-env": "^7.12.11",
+		"@babel/preset-react": "^7.12.10",
+		"@testing-library/dom": "^7.29.4",
+		"@testing-library/jest-dom": "^5.11.9",
+		"@testing-library/react": "^11.2.3",
 		"@types/node": "^14.14.20",
 		"@types/react": "^17.0.0",
+		"babel-jest": "^26.6.3",
 		"babel-plugin-styled-components": "^1.12.0",
+		"jest": "^26.6.3",
+		"jest-dom": "^4.0.0",
 		"typescript": "^4.1.3"
 	}
 }
