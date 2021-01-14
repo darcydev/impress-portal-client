@@ -3,18 +3,15 @@ import { Table, Switch, message } from 'antd';
 import { BsCloudDownload } from 'react-icons/bs';
 
 import { updateAsset } from '../../lib/assets';
-import SwitchRestrictionItem from '../Forms/FormItems/SwitchRestrictionItem';
 
 const API_URL = process.env.PUBLIC_API_URL;
 
 export default function AssetsTable({ data }) {
 	const handleSwitchChange = async (assetId, restricted) => {
-		const updatedAsset = await updateAsset(assetId, { restricted });
+		await updateAsset(assetId, { restricted });
 
-		if (updatedAsset.restricted === restricted) {
+		if (!restricted) {
 			message.success('Asset visible to Client');
-		} else {
-			message.error('Something went wrong...');
 		}
 	};
 
