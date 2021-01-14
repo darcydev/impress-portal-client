@@ -7,7 +7,7 @@ import SelectItem from '../../FormItems/SelectItem';
 import SubmitButton from '../../FormItems/SubmitButton';
 import AssetsPublishedList from '../../FormLists/AssetsPublishedList';
 import RichTextWrapper from '../../../RichTextWrapper';
-import AssetsContainer from '../../../Assets/Container';
+import AssetsTable from '../../../Tables/AssetsTable';
 import { readAllAssets } from '../../../../lib/assets';
 
 type ComponentProps = {
@@ -26,8 +26,6 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 			...values,
 			brief_additionalNotes: additionalNotes,
 		};
-
-		console.log('values :>> ', values);
 	};
 
 	return (
@@ -107,7 +105,7 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 			{assetsQuery.status === 'error' && <p>error...</p>}
 			{assetsQuery.status === 'loading' && <p>loading...</p>}
 			{assetsQuery.status === 'success' && (
-				<AssetsContainer assets={assetsQuery.data} />
+				<AssetsTable data={assetsQuery.data} />
 			)}
 			<h2>Additional Notes</h2>
 			<RichTextWrapper passChildData={setAdditionalNotes} defaultValue={null} />

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Checkbox, message } from 'antd';
 import { BsCloudDownload } from 'react-icons/bs';
 import { GrDocumentPdf } from 'react-icons/gr';
 import { AiOutlineFileJpg } from 'react-icons/ai';
@@ -16,7 +17,7 @@ const FileIcon = (format) => {
 	}
 };
 
-export default function AssetThumbnail({ id, file, title, job, tags }) {
+export default function ClientThumbnail({ id, file, restricted }) {
 	let fileUrl;
 
 	if (!file.formats) {
@@ -25,33 +26,30 @@ export default function AssetThumbnail({ id, file, title, job, tags }) {
 		fileUrl = file.formats.thumbnail.url;
 	}
 
+	const handleCheckChanged = (value) => {
+		if (value) {
+			message.success('Selected for brief');
+		} else {
+			message.error('Unselected from brief');
+		}
+	};
+
 	return (
 		<StyledContainer>
 			<div className='img-wrp'>
-				<img src={`${API_URL}${fileUrl}`} alt={file.alternativeText} />
+				<img src={`${API_URL}${file.url}`} alt={file.alternativeText} />
 			</div>
 			<div className='txt-wrp'>
-				<p className='job-code'>Job code: {job?.job_code}</p>
 				<p className='file-format'>
 					File format: <FileIcon format={file.mime.split('/')[1]} />
 				</p>
 				<p className='file-size'>{file.size}KB</p>
-				<div className='tags-wrp'>
-					<p>Tags:</p>
-					{tags &&
-						tags.map((tag, i) => {
-							return (
-								<div key={`${tag}-${i}`} className='tag-item'>
-									{tag}
-								</div>
-							);
-						})}
-				</div>
 				<div className='cta-wrp'>
 					<div className='download-wrp'>
 						<a href={`${API_URL}${file.url}`} target='_blank'>
 							<BsCloudDownload />
 						</a>
+						<Checkbox onChange={(e) => handleCheckChanged(e.target.checked)} />
 					</div>
 				</div>
 			</div>

@@ -7,8 +7,6 @@ import { readUserRole } from '../../../lib/auth';
 import { readAllBriefs, readBriefById } from '../../../lib/briefs';
 
 export default function EditBrief({ brief, preview }) {
-	console.log('brief :>> ', brief);
-
 	const userRoleQuery = useQuery('userRole', readUserRole);
 
 	const { status, data } = userRoleQuery;

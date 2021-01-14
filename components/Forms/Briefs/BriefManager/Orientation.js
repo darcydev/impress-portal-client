@@ -38,8 +38,6 @@ export default function Orientation({ brief, passChildData }) {
 			brief_project_delivery: projectDelivery,
 		};
 
-		console.log('values :>> ', values);
-
 		const updatedBrief = await updateBrief(brief.id, values);
 
 		if (updatedBrief) {

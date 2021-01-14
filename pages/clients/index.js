@@ -16,13 +16,7 @@ export default function ClientsPage({ allClients, preview }) {
 		return <div>Forbidden!</div>;
 	}
 
-	console.log('allClients :>> ', allClients);
-
-	return (
-		<div>
-			<ClientsTable data={allClients} />
-		</div>
-	);
+	return <ClientsTable data={allClients} />;
 }
 
 export async function getStaticProps({ preview = false }) {

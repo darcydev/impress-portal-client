@@ -1,18 +1,21 @@
 import { useState } from 'react';
+import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Form, message } from 'antd';
 
-import { updateBrief } from '../../../../lib/briefs';
+import AssetsResults from '../../../Assets/AssetsResults';
 import RichTextWrapper from '../../../RichTextWrapper';
 import SubmitButton from '../../FormItems/SubmitButton';
 import ItemWrapper from '../../FormItems/ItemWrapper';
+import { updateBrief } from '../../../../lib/briefs';
+import { readAllAssets } from '../../../../lib/assets';
+import { filterViewableAssetsForClient } from '../../../../utils/filterViewableAssetsForClient';
 
 export default function BriefClient({ brief }) {
 	const [richTextValues, setRichTextValues] = useState({});
+	const allAssetsQuery = useQuery('allAssets', readAllAssets);
 
 	const onFormFinish = async (values) => {
-		console.log('values :>> ', values);
-
 		// TODO is there a way to pass the rich text data in
 		// TODO ...the form data (to avoid having to store them in state and them pass them into values as below?)
 		// INCLUDE THE RICH TEXT DATA IN VALUES BODY
@@ -29,7 +32,7 @@ export default function BriefClient({ brief }) {
 		if (updatedBrief) {
 			message.success('Success!');
 		} else {
-			message.fail('Oops! Something went wrong');
+			message.error('Oops! Something went wrong');
 		}
 	};
 
@@ -43,8 +46,6 @@ export default function BriefClient({ brief }) {
 		brief_project_delivery,
 		brief_project_delivery_visible,
 	} = brief;
-
-	console.log('richTextValues :>> ', richTextValues);
 
 	return (
 		<StyledForm name='edit_brief_client_form' onFinish={onFormFinish}>
@@ -105,6 +106,13 @@ export default function BriefClient({ brief }) {
 						}}
 					/>
 				</ItemWrapper>
+			)}
+			<h2>Visual Library</h2>
+			{allAssetsQuery.status === 'success' && (
+				<AssetsResults
+					data={filterViewableAssetsForClient(allAssetsQuery.data)}
+					client={true}
+				/>
 			)}
 			<SubmitButton />
 		</StyledForm>

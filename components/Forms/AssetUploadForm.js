@@ -80,8 +80,6 @@ export default function AssetUploadForm({
 
 			const updatedAsset = await updateAsset(createdAsset.id, body);
 
-			console.log('updatedAsset :>> ', updatedAsset);
-
 			updatedAsset
 				? message.success(`${updatedAsset.file.name} uploaded`)
 				: message.fail(`${updatedAsset.file.name} failed to upload`);

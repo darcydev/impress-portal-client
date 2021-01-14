@@ -19,13 +19,7 @@ export default function JobsPage({ allJobs, preview }) {
 		return <div>forbidden...</div>;
 	}
 
-	console.log('allJobs :>> ', allJobs);
-
-	return (
-		<div>
-			<JobsTable allJobs={allJobs} />
-		</div>
-	);
+	return <JobsTable allJobs={allJobs} />;
 }
 
 export async function getStaticProps({ preview = false }) {

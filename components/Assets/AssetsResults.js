@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 
 import AssetThumbnail from './AssetThumbnail';
+import ClientThumbnail from './ClientThumbnail';
 import EmptyData from '../EmptyData';
 
-export default function AssetsResults({ data }) {
+export default function AssetsResults({ data, client = false }) {
 	if (!data || !data.length) {
 		return <EmptyData />;
 	}
@@ -15,17 +16,31 @@ export default function AssetsResults({ data }) {
 
 				if (!file) return null;
 
-				return (
-					<AssetThumbnail
-						key={id}
-						id={id}
-						file={file}
-						title={file.name}
-						job={job}
-						tags={tags}
-						usedByClient={used_by_client}
-					/>
-				);
+				if (client) {
+					return (
+						<ClientThumbnail
+							key={id}
+							id={id}
+							file={file}
+							title={file.name}
+							job={job}
+							tags={tags}
+							usedByClient={used_by_client}
+						/>
+					);
+				} else {
+					return (
+						<AssetThumbnail
+							key={id}
+							id={id}
+							file={file}
+							title={file.name}
+							job={job}
+							tags={tags}
+							usedByClient={used_by_client}
+						/>
+					);
+				}
 			})}
 		</StyledContainer>
 	);

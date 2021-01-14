@@ -27,16 +27,12 @@ export default function EditClient({ client, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
-		console.log('values :>> ', values);
-
 		const updatedClient = await updateClient(client.id, values);
-
-		console.log('updatedClient :>> ', updatedClient);
 
 		if (updatedClient) {
 			message.success('Updated');
 		} else {
-			message.fail('Updated failed');
+			message.error('Updated failed');
 		}
 	};
 

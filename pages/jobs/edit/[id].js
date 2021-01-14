@@ -29,11 +29,7 @@ export default function EditJob({ job, preview }) {
 	}
 
 	const onFormFinish = async (values) => {
-		console.log('values :>> ', values);
-
 		const updatedJob = await updateJob(job.id, values);
-
-		console.log('updatedJob :>> ', updatedJob);
 
 		updatedJob
 			? message.success('Success')
