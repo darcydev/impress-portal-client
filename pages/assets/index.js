@@ -1,26 +1,13 @@
-import { useState } from 'react';
 import { useQuery } from 'react-query';
 
-import AssetsSearch from '../../components/Assets/AssetsSearch';
-import AssetsContainer from '../../components/Assets/AssetsContainer';
-import EmptyData from '../../components/EmptyData';
+import AssetsContainer from '../../components/Assets/Container';
 import { readUserRole } from '../../lib/auth';
 import { readAllAssets } from '../../lib/assets';
 
-export default function AssetsPage({ allAssets, preview }) {
-	const [searchFilters, setSearchFilters] = useState({
-		jobCodes: [],
-		tags: [],
-		description: '',
-	});
-
+export default function AssetsPage({ assets, preview }) {
 	const query = useQuery('userRole', readUserRole);
 
 	const { status, data } = query;
-
-	if (!allAssets.length) {
-		return <EmptyData />;
-	}
 
 	if (status !== 'success') {
 		return <p>loading...</p>;
@@ -34,18 +21,13 @@ export default function AssetsPage({ allAssets, preview }) {
 		return <p>forbidden...</p>;
 	}
 
-	return (
-		<>
-			<AssetsSearch assets={allAssets} passChildData={setSearchFilters} />
-			<AssetsContainer activeFilters={searchFilters} />
-		</>
-	);
+	return <AssetsContainer assets={assets} />;
 }
 
 export async function getStaticProps({ preview = false }) {
-	const allAssets = await readAllAssets(preview);
+	const assets = await readAllAssets(preview);
 
 	return {
-		props: { allAssets, preview },
+		props: { assets, preview },
 	};
 }

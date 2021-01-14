@@ -4,6 +4,7 @@ import { Button } from 'antd';
 import Orientation from './Orientation';
 import Animation from './Animation';
 import AssetUploadForm from '../../AssetUploadForm';
+import AssetsContainer from '../../../Assets/Container';
 
 export default function BriefManager({ brief }) {
 	const [formType, setFormType] = useState('Orientation');
@@ -32,6 +33,7 @@ export default function BriefManager({ brief }) {
 		<div>
 			{relevantForm}
 			<AssetUploadForm briefId={brief.id} jobId={brief.job?.id} />
+			<AssetsContainer assets={brief.assets} />
 		</div>
 	);
 }

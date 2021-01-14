@@ -7,8 +7,7 @@ import SelectItem from '../../FormItems/SelectItem';
 import SubmitButton from '../../FormItems/SubmitButton';
 import AssetsPublishedList from '../../FormLists/AssetsPublishedList';
 import RichTextWrapper from '../../../RichTextWrapper';
-import AssetsSearch from '../../../Assets/AssetsSearch';
-import AssetsContainer from '../../../Assets/AssetsContainer';
+import AssetsContainer from '../../../Assets/Container';
 import { readAllAssets } from '../../../../lib/assets';
 
 type ComponentProps = {
@@ -18,11 +17,6 @@ type ComponentProps = {
 const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 	const [formValues, setFormValues] = useState({});
 	const [additionalNotes, setAdditionalNotes] = useState(undefined);
-	const [searchFilters, setSearchFilters] = useState({
-		jobCodes: [],
-		tags: [],
-		description: '',
-	});
 	const [form] = Form.useForm();
 
 	const assetsQuery = useQuery('assetsQuery', readAllAssets);
@@ -35,9 +29,6 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 
 		console.log('values :>> ', values);
 	};
-
-	console.log('formValues :>> ', formValues);
-	console.log('assetsQuery :>> ', assetsQuery);
 
 	return (
 		<StyledForm
@@ -116,13 +107,7 @@ const Animation: FunctionComponent<ComponentProps> = ({ brief }) => {
 			{assetsQuery.status === 'error' && <p>error...</p>}
 			{assetsQuery.status === 'loading' && <p>loading...</p>}
 			{assetsQuery.status === 'success' && (
-				<>
-					<AssetsSearch
-						assets={assetsQuery.data}
-						passChildData={setSearchFilters}
-					/>
-					<AssetsContainer activeFilters={searchFilters} />
-				</>
+				<AssetsContainer assets={assetsQuery.data} />
 			)}
 			<h2>Additional Notes</h2>
 			<RichTextWrapper passChildData={setAdditionalNotes} defaultValue={null} />

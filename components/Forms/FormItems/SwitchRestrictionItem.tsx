@@ -9,6 +9,7 @@ type ComponentProps = {
 	label?: string;
 	required?: boolean;
 	selectName?: string;
+	defaultChecked?: boolean;
 };
 
 const SwitchRestrictionItem: FunctionComponent<ComponentProps> = ({
@@ -16,6 +17,7 @@ const SwitchRestrictionItem: FunctionComponent<ComponentProps> = ({
 	label = 'Restricted',
 	required = true,
 	selectName = 'users_permissions_users',
+	defaultChecked = false,
 }) => {
 	const [switchChecked, setSwitchedChecked] = useState(false);
 
@@ -25,6 +27,7 @@ const SwitchRestrictionItem: FunctionComponent<ComponentProps> = ({
 				<Switch
 					checkedChildren='Restricted'
 					unCheckedChildren='Unrestricted'
+					defaultChecked={defaultChecked}
 					onChange={(e) => setSwitchedChecked(e)}
 				/>
 			</ItemWrapper>
@@ -40,31 +43,3 @@ const SwitchRestrictionItem: FunctionComponent<ComponentProps> = ({
 };
 
 export default SwitchRestrictionItem;
-
-/* export default function SwitchRestrictionItem({
-	name = 'restricted',
-	label = 'Restricted',
-	required = true,
-}) {
-	const [switchChecked, setSwitchedChecked] = useState(false);
-
-	return (
-		<>
-			<ItemWrapper name={name} label={label} required={required}>
-				<Switch
-					checkedChildren='Restricted'
-					unCheckedChildren='Unrestricted'
-					onChange={(e) => setSwitchedChecked(e)}
-				/>
-			</ItemWrapper>
-			{switchChecked && (
-				<SelectRestrictedClients
-					name='users_permissions_users'
-					label='Restricted to Clients'
-					required={switchChecked}
-				/>
-			)}
-		</>
-	);
-}
- */

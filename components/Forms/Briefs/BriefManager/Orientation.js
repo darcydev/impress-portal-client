@@ -71,8 +71,6 @@ export default function Orientation({ brief, passChildData }) {
 		restricted,
 	} = brief;
 
-	console.log('formValues :>> ', formValues);
-
 	return (
 		<StyledForm
 			form={form}
@@ -166,7 +164,7 @@ export default function Orientation({ brief, passChildData }) {
 				label='Brief Status'
 				required={true}
 			/>
-			<SwitchRestrictionItem />
+			<SwitchRestrictionItem defaultChecked={restricted} />
 			<SubmitButton buttonText='Update Brief' />
 		</StyledForm>
 	);

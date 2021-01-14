@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 
@@ -20,27 +19,6 @@ export default function Brief({ brief, preview }) {
 	if (userRoleQuery.data !== 'Manager') {
 		return <p>forbidden...</p>;
 	}
-
-	const {
-		assets,
-		audiences,
-		brand_assets_style_guide_on_file,
-		brief_status,
-		brief_title,
-		brief_type,
-		budget,
-		created_at,
-		updated_at,
-		date_approved,
-		design_direction,
-		desired_outcomes,
-		id,
-		job,
-		key_contact,
-		key_milestones,
-		project_circumstances,
-		project_delivery_specifics,
-	} = brief;
 
 	return (
 		<StyledContainer>

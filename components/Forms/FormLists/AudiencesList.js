@@ -1,4 +1,4 @@
-import { Form, Input, Button, Rate, Space } from 'antd';
+import { Form, Input, Button, Rate } from 'antd';
 import styled from 'styled-components';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -15,7 +15,7 @@ export default function Audiences() {
 				{(fields, { add, remove }, { errors }) => (
 					<>
 						{fields.map((field, index) => (
-							<Space key={field.key} align='center'>
+							<StyledFormListItem key={field.key}>
 								<Item
 									{...field}
 									name={[field.name, 'priority']}
@@ -45,7 +45,7 @@ export default function Audiences() {
 										remove(field.name);
 									}}
 								/>
-							</Space>
+							</StyledFormListItem>
 						))}
 						<Item>
 							<Button
@@ -68,4 +68,14 @@ export default function Audiences() {
 const StyledHeader = styled.h3`
 	font-size: 16px;
 	font-weight: 500;
+`;
+
+const StyledFormListItem = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.ant-form-item {
+		text-align: center;
+	}
 `;

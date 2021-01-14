@@ -1,20 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useQuery } from 'react-query';
 import { Select, Input } from 'antd';
 
 import { readAllNonNullJobCodes } from '../../lib/jobs';
 
-export default function AssetsSearch({ assets, passChildData }) {
+export default function AssetsSearch({ assets, setFilteredData }) {
 	const [searchFilters, setSearchFilters] = useState({
 		jobCodes: [],
 		tags: [],
 		description: '',
 	});
 
-	if (!assets.length) {
-		return <p>empty...</p>;
-	}
+	useEffect(() => {
+		setFilteredData(tempData);
+	}, [searchFilters]);
 
 	const jobCodesQuery = useQuery('jobCodes', readAllNonNullJobCodes);
 
@@ -40,7 +40,38 @@ export default function AssetsSearch({ assets, passChildData }) {
 		tagOptions.push({ value });
 	}
 
-	passChildData(searchFilters);
+	/* FILTERING */
+	let tempData = assets;
+
+	const { description, jobCodes, tags } = searchFilters;
+
+	if (jobCodes.length) {
+		tempData = tempData.filter(
+			(asset) => asset.job && jobCodes.includes(asset.job.id)
+		);
+	}
+
+	if (tags.length) {
+		// TODO: REFACTOR -> ASK STACK OVERFLOW HOW TO REFACTOR THIS
+		tempData = tempData.filter((asset) => {
+			let assetIncluded = true;
+
+			tags.forEach((tag) => {
+				const searchTagInAssetTagArray = asset.tags?.includes(tag);
+
+				if (!searchTagInAssetTagArray) assetIncluded = false;
+			});
+
+			return asset.tags && assetIncluded;
+		});
+	}
+
+	if (description) {
+		tempData = tempData.filter(
+			(asset) =>
+				asset.asset_description && asset.asset_description.includes(description)
+		);
+	}
 
 	return (
 		<StyledContainer>

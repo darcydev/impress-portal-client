@@ -28,40 +28,30 @@ export default function AssetsContainer({ activeFilters }) {
 	const { description, jobCodes, tags } = activeFilters;
 
 	if (jobCodes.length) {
-		// First, filter out all assets with empty jobCodes
-		filteredData = filteredData.filter((asset) => asset.job);
-
-		filteredData = filteredData.filter((asset) =>
-			jobCodes.includes(asset.job.id)
+		filteredData = filteredData.filter(
+			(asset) => asset.job && jobCodes.includes(asset.job.id)
 		);
 	}
 
 	if (tags.length) {
-		// 1) filter out all assets with empty tags
-		filteredData = filteredData.filter((asset) => asset.tags);
-
-		// 2) filter out all assets with do not have all of the tags in their tags array
 		// TODO: REFACTOR -> ASK STACK OVERFLOW HOW TO REFACTOR THIS
 		filteredData = filteredData.filter((asset) => {
 			let assetIncluded = true;
 
 			tags.forEach((tag) => {
-				const searchTagInAssetTagArray = asset.tags.includes(tag);
+				const searchTagInAssetTagArray = asset.tags?.includes(tag);
 
 				if (!searchTagInAssetTagArray) assetIncluded = false;
 			});
 
-			return assetIncluded;
+			return asset.tags && assetIncluded;
 		});
 	}
 
 	if (description) {
-		// 1) filter out all assets with empty description
-		filteredData = filteredData.filter((asset) => asset.asset_description);
-
-		// 2) filter out all assets which have the search string
-		filteredData = filteredData.filter((asset) =>
-			asset.asset_description.includes(description)
+		filteredData = filteredData.filter(
+			(asset) =>
+				asset.asset_description && asset.asset_description.includes(description)
 		);
 	}
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { DatePicker, Form, Input, Button, Space, Statistic } from 'antd';
+import { DatePicker, Form, Input, Button, Statistic } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 import { getWorkingDays } from '../../../utils/getWorkingDays';
@@ -28,45 +28,55 @@ export default function KeyMilestonesList() {
 				{(fields, { add, remove }) => (
 					<>
 						{fields.map((field) => (
-							<Space key={field.key} align='baseline'>
-								<Item
-									{...field}
-									name={[field.name, 'description']}
-									fieldKey={[field.fieldKey, 'description']}
-									rules={requiredField}
-								>
-									<TextArea autoSize placeholder='Description' />
-								</Item>
-								<Item
-									{...field}
-									name={[field.name, 'due_date']}
-									fieldKey={[field.fieldKey, 'due_date']}
-									rules={requiredField}
-								>
-									<DatePicker
-										placeholder='Due date'
-										format={['DD/MM/YYYY']}
-										onChange={(e) => handleDateChange(field.fieldKey, e)}
+							<StyledFormListItem key={field.key}>
+								<div className='milestone-item'>
+									<Item
+										{...field}
+										name={[field.name, 'description']}
+										fieldKey={[field.fieldKey, 'description']}
+										rules={requiredField}
+									>
+										<TextArea autoSize placeholder='Description' />
+									</Item>
+								</div>
+								<div className='milestone-item'>
+									<Item
+										{...field}
+										name={[field.name, 'due_date']}
+										fieldKey={[field.fieldKey, 'due_date']}
+										rules={requiredField}
+									>
+										<DatePicker
+											placeholder='Due date'
+											format={['DD/MM/YYYY']}
+											onChange={(e) => handleDateChange(field.fieldKey, e)}
+										/>
+									</Item>
+								</div>
+								<div className='milestone-item'>
+									<Item
+										{...field}
+										name={[field.name, 'comments']}
+										fieldKey={[field.fieldKey, 'comments']}
+										rules={requiredField}
+									>
+										<TextArea autoSize placeholder='Comments' />
+									</Item>
+								</div>
+								<div className='milestone-item'>
+									<Statistic
+										title='Business days'
+										value={workingDays[field.fieldKey]}
 									/>
-								</Item>
-								<Item
-									{...field}
-									name={[field.name, 'comments']}
-									fieldKey={[field.fieldKey, 'comments']}
-									rules={requiredField}
-								>
-									<TextArea autoSize placeholder='Comments' />
-								</Item>
-								<Statistic
-									title='Business days'
-									value={workingDays[field.fieldKey]}
-								/>
-								<MinusCircleOutlined
-									onClick={() => {
-										remove(field.name);
-									}}
-								/>
-							</Space>
+								</div>
+								<div className='milestone-item'>
+									<MinusCircleOutlined
+										onClick={() => {
+											remove(field.name);
+										}}
+									/>
+								</div>
+							</StyledFormListItem>
 						))}
 						<Item>
 							<Button
@@ -88,4 +98,30 @@ export default function KeyMilestonesList() {
 const StyledHeader = styled.h3`
 	font-size: 16px;
 	font-weight: 500;
+`;
+
+const StyledFormListItem = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.milestone-item {
+		.ant-form-item {
+			.ant-form-item-control-input {
+				width: 300px;
+			}
+
+			.ant-picker {
+				width: 100%;
+			}
+		}
+
+		.ant-statistic {
+			text-align: center;
+
+			.ant-statistic-title {
+				margin: 0;
+			}
+		}
+	}
 `;
